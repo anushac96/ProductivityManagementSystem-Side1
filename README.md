@@ -1,3 +1,17 @@
+# Pomodaro Timer
+## For circular progress bar
+1. go to https://www.npmjs.com/
+2. type react-circular-progressbar
+3. installation
+npm install --save react-circular-progressbar
+4. usage
+import { CircularProgressbar } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
+<CircularProgressbar value={60} text={'60%'} />;
+
+## For play button
+https://heroicons.com/
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
