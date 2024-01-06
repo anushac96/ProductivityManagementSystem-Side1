@@ -141,12 +141,13 @@ calendar .calendarTag::before {
   z-index: 9999;
  }
  
+ /* entire calander*/
  calendar .container {
   position: absolute;
   top: 0;
   left: 0;
-  width: 700px;
-  min-height: 500px;
+  width: 1100px;
+  min-height: 800px;
   margin: 0 auto;
   padding: 5px;
   color: #fff;
@@ -155,11 +156,13 @@ calendar .calendarTag::before {
   background-color: #7c90c1;
  }
  
+ /* size of white box */
  calendar .left {
   width: 60%;
   padding: 20px;
  }
  
+ /*text inside white box*/
  calendar .calendarTag {
   width: 100%;
   height: 100%;
@@ -167,7 +170,7 @@ calendar .calendarTag::before {
   flex-direction: column;
   justify-content: space-between;
   color: #878895;
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: #fff;
  }
  
@@ -189,3 +192,67 @@ calendar .calendarTag::before {
   left: calc(100% + 22px);
   background-color: #45506b;
  }
+
+ .calendarTag .month {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 50px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.calendarTag .month .prev,
+.calendarTag .month .next {
+  cursor: pointer;
+}
+.calendarTag .month .prev:hover,
+.calendarTag .month .next:hover {
+  color: var(--primary-clr);
+}
+
+.calendarTag .weekdays {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.calendarTag .weekdays div {
+  width: 14.28%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendarTag .days {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 0 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.calendarTag .days .day {
+  width: 14.28%;
+  height: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--primary-clr);
+  border: 1px solid #f5f5f5;
+}
+
+
