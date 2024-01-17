@@ -9,10 +9,11 @@ function Calender() {
   ]);
 
   const [days, setDays] = useState([]);
+  const [inputDate, setInputDate] = useState('');
 
   useEffect(() => {
     initCalendar();
-  }, [date]); // Update the effect to run whenever the date changes
+  }, [date, inputDate]); // Update the effect to run whenever the date changes
 
   function initCalendar() {
     const month = date.getMonth();
@@ -89,6 +90,31 @@ function Calender() {
     setDate(new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
   }
 
+  function goToToday() {
+    setDate(new Date());
+  }
+
+  function goToSelectedMonth() {
+    if (inputDate) {
+      const [selectedMonth, selectedYear] = inputDate.split('/');
+      const monthNumber = Number(selectedMonth);
+      const yearNumber = Number(selectedYear);
+  
+      // Check if the input is a valid month and year
+      if (
+        !isNaN(monthNumber) &&
+        monthNumber >= 1 &&
+        monthNumber <= 12 &&
+        !isNaN(yearNumber) &&
+        yearNumber >= 1000
+      ) {
+        const selectedDate = new Date(yearNumber, monthNumber - 1, 1);
+        setDate(selectedDate);
+      }
+      // If input is invalid, do nothing
+    }
+  }
+
   return (
     <body>
       <div class="container">
@@ -117,10 +143,16 @@ function Calender() {
             </div>
             <div class="goto-today">
               <div class="goto">
-                <input type="text" placeholder="mm/yyyy" class="date-input"></input>
-                <button class="goto-btn">go</button>
+              <input
+                  type="text"
+                  placeholder="mm/yyyy"
+                  className="date-input"
+                  value={inputDate}
+                  onChange={(e) => setInputDate(e.target.value)}
+                ></input>
+                <button class="goto-btn" onClick={goToSelectedMonth}>Go</button>
               </div>
-              <button class="today-btn">today</button>
+              <button class="today-btn" onClick={goToToday}>Today</button>
             </div>
           </div>
         </div>
