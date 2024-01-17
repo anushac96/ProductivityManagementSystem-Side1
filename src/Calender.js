@@ -10,6 +10,9 @@ function Calender() {
 
   const [days, setDays] = useState([]);
   const [inputDate, setInputDate] = useState('');
+   // Add state for controlling the visibility of the add-event-wrapper
+   const [isAddEventActive, setAddEventActive] = useState(false);
+
 
   useEffect(() => {
     initCalendar();
@@ -99,7 +102,7 @@ function Calender() {
       const [selectedMonth, selectedYear] = inputDate.split('/');
       const monthNumber = Number(selectedMonth);
       const yearNumber = Number(selectedYear);
-  
+
       // Check if the input is a valid month and year
       if (
         !isNaN(monthNumber) &&
@@ -114,6 +117,11 @@ function Calender() {
       // If input is invalid, do nothing
     }
   }
+
+  // Function to toggle the add-event-wrapper's visibility
+  const toggleAddEvent = () => {
+    setAddEventActive(!isAddEventActive);
+  };
 
   return (
     <body>
@@ -143,7 +151,7 @@ function Calender() {
             </div>
             <div class="goto-today">
               <div class="goto">
-              <input
+                <input
                   type="text"
                   placeholder="mm/yyyy"
                   className="date-input"
@@ -156,12 +164,35 @@ function Calender() {
             </div>
           </div>
         </div>
-        <div class = "right">
-          <div class = "today-date">
-            <div class = "event-day">Wed</div>
-            <div class = "event-date">17 January 2024</div>
+        <div class="right">
+          <div class="today-date">
+            <div class="event-day">Wed</div>
+            <div class="event-date">17 January 2024</div>
           </div>
-          
+          <div class="events"></div>
+          <div class={`add-event-wrapper ${isAddEventActive ? 'active' : ''}`}>
+            <div class="add-event-header">
+              <div class="title">Add Event</div>
+              <i class="fas fa-times close" onClick={toggleAddEvent}></i>
+            </div>
+            <div class="add-event-body">
+              <div class="add-event-input">
+                <input type="text" placeholder="Event Name" class="event-name"></input>
+              </div>
+              <div class="add-event-input">
+                <input type="text" placeholder="Event Time From" class="event-time-from"></input>
+              </div>
+              <div class="add-event-input">
+                <input type="text" placeholder="Event Time To" class="event-time-to"></input>
+              </div>
+            </div>
+            <div class = "add-event-footer">
+              <button class = "add-event-btn">Add Event</button>
+            </div>
+          </div>
+          <button class = "add-event" onClick={toggleAddEvent}>
+            <i class = "fas fa-plus"></i>
+          </button>
         </div>
       </div>
     </body>

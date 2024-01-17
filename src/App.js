@@ -4,7 +4,6 @@ import Settings from './Settings';
 import { useState } from 'react';
 import SettingsContext from './SettingsContext';
 import Calender from './Calender';
-import CalendarApp from './CalendarApp';
 
 
 function App() {
