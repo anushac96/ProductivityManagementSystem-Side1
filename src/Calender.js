@@ -39,11 +39,16 @@ function Calender() {
 
     // Add days from the current month
     for (let i = 1; i <= lastDate; i++) {
+      const currentDate = new Date(year, month, i);
       const currentDay = {
         value: i,
-        className: i === date.getDate() && month === date.getMonth() ? 'active' : '',
-        isToday: i === date.getDate() && month === date.getMonth(),
+        className: '',
+        isToday: isSameDay(currentDate, new Date()),
       };
+
+      if (currentDay.isToday) {
+        currentDay.className = 'active';
+      }
 
       daysArray.push(currentDay);
     }
@@ -68,6 +73,12 @@ function Calender() {
     if (dateElement) {
       dateElement.innerHTML = content;
     }
+  }
+
+  function isSameDay(date1, date2) {
+    const d1 = new Date(date1.getFullYear(), date1.getMonth(), date1.getDate());
+    const d2 = new Date(date2.getFullYear(), date2.getMonth(), date2.getDate());
+    return d1.getTime() === d2.getTime();
   }
 
   function goToPreviousMonth() {
