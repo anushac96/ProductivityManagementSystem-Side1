@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { format, parse, isValid } from 'date-fns';
 
 function Calender() {
 
@@ -8,11 +9,33 @@ function Calender() {
     'July', 'August', 'September', 'October', 'November', 'December'
   ]);
 
+  // default event array
+  const eventsArr = [
+    {
+      day: 17,
+      month: 1,
+      year: 2024,
+      events: [
+        {
+          title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
+          time: "10:00 AM",
+        },
+        {
+          title: "Event 2",
+          time: "11:00 AM",
+        },
+      ],
+    },
+  ];
+
   const [days, setDays] = useState([]);
   const [inputDate, setInputDate] = useState('');
-   // Add state for controlling the visibility of the add-event-wrapper
-   const [isAddEventActive, setAddEventActive] = useState(false);
+  // Add state for controlling the visibility of the add-event-wrapper
+  const [isAddEventActive, setAddEventActive] = useState(false);
 
+  const [eventName, setEventName] = useState('');
+  const [eventTimeFrom, setEventTimeFrom] = useState('');
+  const [eventTimeTo, setEventTimeTo] = useState('');
 
   useEffect(() => {
     initCalendar();
@@ -43,15 +66,42 @@ function Calender() {
 
     // Add days from the current month
     for (let i = 1; i <= lastDate; i++) {
+      // check if event is present on current day
       const currentDate = new Date(year, month, i);
       const currentDay = {
         value: i,
         className: '',
         isToday: isSameDay(currentDate, new Date()),
+        hasEvents: false, // Initialize a flag for events on the current day
       };
 
+      // Check if there are events on the current day
+      const eventsOnCurrentDay = eventsArr.find(event => {
+        return (
+          event.day === i &&
+          event.month === month + 1 && // Months are 0-indexed in JavaScript Date objects
+          event.year === year
+        );
+      });
+
+      // if (eventsOnCurrentDay) {
+      //   currentDay.hasEvents = true;
+      //   currentDate.className = 'day today active event';
+      // }
+
       if (currentDay.isToday) {
-        currentDay.className = 'active';
+        if (eventsOnCurrentDay) {
+          currentDay.hasEvents = true;
+          currentDay.className = 'day today active event';
+        }else
+        currentDay.className = 'today active';
+      }
+      else{
+        if (eventsOnCurrentDay) {
+          currentDay.hasEvents = true;
+          currentDay.className = 'day event';
+        }else
+        currentDay.className = 'day';
       }
 
       daysArray.push(currentDay);
@@ -121,6 +171,64 @@ function Calender() {
   // Function to toggle the add-event-wrapper's visibility
   const toggleAddEvent = () => {
     setAddEventActive(!isAddEventActive);
+
+    // Reset input values when closing the modal
+    if (!isAddEventActive) {
+      setEventName('');
+      setEventTimeFrom('');
+      setEventTimeTo('');
+    }
+  };
+
+
+
+  const handleEventTimeFrom = (e) => {
+    const inputTime = e.target.value;
+
+    if (inputTime.length >= 7) {
+      const parsedTime = parse(inputTime, 'hh:mm a', new Date());
+
+      if (isValid(parsedTime)) {
+        setEventTimeFrom(format(parsedTime, 'hh:mm a'));
+      } else {
+        console.log('Invalid Time From:', inputTime);
+        // Handle invalid time if needed
+        // setEventTimeFrom('');
+      }
+    }
+
+    // Update the local state for smooth rendering
+    setEventTimeFrom(inputTime);
+  };
+
+  const handleEventTimeTo = (e) => {
+    const inputTime = e.target.value;
+
+    if (inputTime.length >= 7) {
+      const parsedTime = parse(inputTime, 'hh:mm a', new Date());
+
+      if (isValid(parsedTime)) {
+        setEventTimeTo(format(parsedTime, 'hh:mm a'));
+      } else {
+        console.log('Invalid Time To:', inputTime);
+        // Handle invalid time if needed
+        // setEventTimeTo('');
+      }
+    }
+
+    // Update the local state for smooth rendering
+    setEventTimeTo(inputTime);
+  };
+
+  const handleAddEvent = () => {
+    // Do something with the event details (eventName, eventTimeFrom, eventTimeTo)
+    // For now, let's just log them
+    console.log('Event Name:', eventName);
+    console.log('Event Time From:', eventTimeFrom);
+    console.log('Event Time To:', eventTimeTo);
+
+    // Close the add-event-wrapper
+    setAddEventActive(false);
   };
 
   return (
@@ -177,21 +285,33 @@ function Calender() {
             </div>
             <div class="add-event-body">
               <div class="add-event-input">
-                <input type="text" placeholder="Event Name" class="event-name"></input>
+                <input type="text"
+                  placeholder="Event Name"
+                  class="event-name"
+                  value={eventName}
+                  onChange={(e) => setEventName(e.target.value)}></input>
               </div>
               <div class="add-event-input">
-                <input type="text" placeholder="Event Time From" class="event-time-from"></input>
+                <input type="text"
+                  placeholder="Event Time From"
+                  class="event-time-from"
+                  value={eventTimeFrom}
+                  onChange={handleEventTimeFrom}></input>
               </div>
               <div class="add-event-input">
-                <input type="text" placeholder="Event Time To" class="event-time-to"></input>
+                <input type="text"
+                  placeholder="Event Time To"
+                  class="event-time-to"
+                  value={eventTimeTo}
+                  onChange={handleEventTimeTo} ></input>
               </div>
             </div>
-            <div class = "add-event-footer">
-              <button class = "add-event-btn">Add Event</button>
+            <div class="add-event-footer">
+              <button class="add-event-btn" onClick={handleAddEvent}>Add Event</button>
             </div>
           </div>
-          <button class = "add-event" onClick={toggleAddEvent}>
-            <i class = "fas fa-plus"></i>
+          <button class="add-event" onClick={toggleAddEvent}>
+            <i class="fas fa-plus"></i>
           </button>
         </div>
       </div>
