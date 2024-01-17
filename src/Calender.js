@@ -156,6 +156,13 @@ function Calender() {
             </div>
           </div>
         </div>
+        <div class = "right">
+          <div class = "today-date">
+            <div class = "event-day">Wed</div>
+            <div class = "event-date">17 January 2024</div>
+          </div>
+          
+        </div>
       </div>
     </body>
   );
