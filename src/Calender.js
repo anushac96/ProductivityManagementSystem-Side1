@@ -26,6 +26,21 @@ function Calender() {
         },
       ],
     },
+    {
+      day: 19,
+      month: 1,
+      year: 2024,
+      events: [
+        {
+          title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
+          time: "10:00 AM",
+        },
+        {
+          title: "Event 2",
+          time: "11:00 AM",
+        },
+      ],
+    },
   ];
 
   const [days, setDays] = useState([]);
@@ -36,10 +51,12 @@ function Calender() {
   const [eventName, setEventName] = useState('');
   const [eventTimeFrom, setEventTimeFrom] = useState('');
   const [eventTimeTo, setEventTimeTo] = useState('');
+  // Add a state to keep track of the selected day index
+  const [selectedDayIndex, setSelectedDayIndex] = useState(null);
 
   useEffect(() => {
     initCalendar();
-  }, [date, inputDate]); // Update the effect to run whenever the date changes
+  }, [date, inputDate, selectedDayIndex]); // Update the effect to run whenever the date changes
 
   function initCalendar() {
     const month = date.getMonth();
@@ -84,24 +101,19 @@ function Calender() {
         );
       });
 
-      // if (eventsOnCurrentDay) {
-      //   currentDay.hasEvents = true;
-      //   currentDate.className = 'day today active event';
-      // }
-
       if (currentDay.isToday) {
         if (eventsOnCurrentDay) {
           currentDay.hasEvents = true;
           currentDay.className = 'day today active event';
-        }else
-        currentDay.className = 'today active';
+        } else
+          currentDay.className = 'today active';
       }
-      else{
+      else {
         if (eventsOnCurrentDay) {
           currentDay.hasEvents = true;
           currentDay.className = 'day event';
-        }else
-        currentDay.className = 'day';
+        } else
+          currentDay.className = 'day';
       }
 
       daysArray.push(currentDay);
@@ -180,8 +192,6 @@ function Calender() {
     }
   };
 
-
-
   const handleEventTimeFrom = (e) => {
     const inputTime = e.target.value;
 
@@ -220,6 +230,58 @@ function Calender() {
     setEventTimeTo(inputTime);
   };
 
+  function handleDayClick(day, index) {
+    // Update the state to mark the selected day as active
+    const updatedDays = days.map((d, i) => {
+      if (i === index) {
+        return { ...d, className: 'active' };
+      } else {
+        return d;
+      }
+    });
+
+    setDays(updatedDays);
+
+    // Remove the 'active' class from other days after a short delay
+    setTimeout(() => {
+      const updatedDaysAfterDelay = updatedDays.map((d, i) => {
+        return i !== index ? { ...d, className: d.className.replace('active', '') } : d;
+      });
+    
+      setDays(updatedDaysAfterDelay);
+    }, 100);
+    
+
+    if (days[index].className === 'prev-date' || days[index].className === 'next-date') {
+      // Delay changing the month to wait for the 'active' class to be added
+      setTimeout(() => {
+        if (days[index].className === 'prev-date') {
+          goToPreviousMonth();
+        } else if (days[index].className === 'next-date') {
+          goToNextMonth();
+        }
+
+        // Find the index of the clicked day in the updated month
+        const clickedDayIndexInUpdatedMonth = days.findIndex(
+          (d) => d.value === day && !d.className.includes('prev-date') && !d.className.includes('next-date')
+        );
+
+        // Add 'active' class to the clicked day after the month is changed
+        const updatedDaysAfterMonthChange = days.map((d, i) => {
+          if (i === clickedDayIndexInUpdatedMonth) {
+            return { ...d, className: 'active' };
+          } else {
+            return d;
+          }
+        });
+
+        setDays(updatedDaysAfterMonthChange);
+        
+        // TODO: when clicked on dates of next/prev month. That date should get selected
+      }, 100);
+    }
+  }
+
   const handleAddEvent = () => {
     // Do something with the event details (eventName, eventTimeFrom, eventTimeTo)
     // For now, let's just log them
@@ -252,7 +314,7 @@ function Calender() {
             </div>
             <div class="days">
               {days.map((day, index) => (
-                <div key={index} className={`day ${day.className}`}>
+                <div key={index} className={`day ${day.className}`} onClick={() => handleDayClick(day, index)}>
                   {day.value}
                 </div>
               ))}
@@ -318,4 +380,5 @@ function Calender() {
     </body>
   );
 }
+
 export default Calender;
