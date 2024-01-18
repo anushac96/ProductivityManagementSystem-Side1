@@ -125,8 +125,6 @@ function Calender() {
       daysArray.push({
         value: nextMonthDay,
         className: 'next-date',
-        //isToday: false,
-        //isPrevMonth: false,
       });
     }
 
@@ -231,26 +229,43 @@ function Calender() {
   };
 
   function handleDayClick(day, index) {
-    // Update the state to mark the selected day as active
-    const updatedDays = days.map((d, i) => {
-      if (i === index) {
-        return { ...d, className: 'active' };
-      } else {
-        return d;
-      }
-    });
-
-    setDays(updatedDays);
-
-    // Remove the 'active' class from other days after a short delay
+    // retain the classes other than active
+    // Print all classes of the clicked date
     setTimeout(() => {
-      const updatedDaysAfterDelay = updatedDays.map((d, i) => {
-        return i !== index ? { ...d, className: d.className.replace('active', '') } : d;
+      const clickedDateElement = document.querySelector(`.day:nth-child(${index + 1})`);
+      const clickedDateClasses = Array.from(clickedDateElement.classList);
+      console.log('Clicked Date Classes:', clickedDateClasses);
+
+      // Update the state to mark the selected day as active
+      const updatedDays = days.map((d, i) => {
+        if (i === index) {
+          return { ...d, className: ['active', ...clickedDateClasses].join(' ') };
+        } else {
+          return d;
+        }
       });
-    
+
+      setDays(updatedDays);
+
+      // Remove the 'active' class from other days after a short delay
+      const updatedDaysAfterDelay = updatedDays.map((d, i) => {
+        if (i !== index) {
+          // Use a regular expression to replace only the 'active' class
+          const updatedClass = d.className.replace(/\bactive\b/g, '');
+          return { ...d, className: updatedClass };
+        } else {
+          return d;
+        }
+      });
+
       setDays(updatedDaysAfterDelay);
+
+      setTimeout(() => {
+        clickedDateElement.classList.add(...clickedDateClasses.filter(cls => cls !== 'active'));
+      }, 0);
+
     }, 100);
-    
+
 
     if (days[index].className === 'prev-date' || days[index].className === 'next-date') {
       // Delay changing the month to wait for the 'active' class to be added
@@ -276,7 +291,7 @@ function Calender() {
         });
 
         setDays(updatedDaysAfterMonthChange);
-        
+
         // TODO: when clicked on dates of next/prev month. That date should get selected
       }, 100);
     }
