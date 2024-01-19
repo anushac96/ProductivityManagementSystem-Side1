@@ -52,7 +52,7 @@ function Calender() {
   const [eventTimeFrom, setEventTimeFrom] = useState('');
   const [eventTimeTo, setEventTimeTo] = useState('');
   // Add a state to keep track of the selected day index
-  const [selectedDayIndex, setSelectedDayIndex] = useState(null);
+  const [selectedDayIndex, setSelectedDayIndex] = useState(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
 
 
   // Function to get the day name from a date
@@ -66,7 +66,7 @@ function Calender() {
 
   useEffect(() => {
     initCalendar();
-  }, [date, inputDate, selectedDayIndex]); // Update the effect to run whenever the date changes
+  }, [date, inputDate]); // Update the effect to run whenever the date changes
 
   function initCalendar() {
     const month = date.getMonth();
@@ -283,6 +283,10 @@ function Calender() {
   const newSelectedDayName = getDayName(new Date(date.getFullYear(), date.getMonth(), index));
   setSelectedDayName(newSelectedDayName);
 
+  // Use the clicked date to update the SelectedDayName
+  const newSelectedDayIndex = new Date(date.getFullYear(), date.getMonth(), index);
+  setSelectedDayIndex(newSelectedDayIndex);
+
     if (days[index].className === 'prev-date' || days[index].className === 'next-date') {
       // Delay changing the month to wait for the 'active' class to be added
       setTimeout(() => {
@@ -368,7 +372,7 @@ function Calender() {
         <div class="right">
           <div class="today-date">
             <div class="event-day">{selectedDayName}</div>
-            <div class="event-date">{format(date, 'dd MMMM yyyy')}</div>
+            <div class="event-date">{format(selectedDayIndex, 'dd MMMM yyyy')}</div>
           </div>
           <div class="events"></div>
           <div class={`add-event-wrapper ${isAddEventActive ? 'active' : ''}`}>
