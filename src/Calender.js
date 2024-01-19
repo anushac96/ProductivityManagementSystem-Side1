@@ -54,6 +54,16 @@ function Calender() {
   // Add a state to keep track of the selected day index
   const [selectedDayIndex, setSelectedDayIndex] = useState(null);
 
+
+  // Function to get the day name from a date
+  const getDayName = (date) => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    //console.log("date=======", date);
+    return days[date.getDay()];
+  };
+
+  const [selectedDayName, setSelectedDayName] = useState(getDayName(new Date(date.getFullYear(), date.getMonth(), date.getDate())));
+
   useEffect(() => {
     initCalendar();
   }, [date, inputDate, selectedDayIndex]); // Update the effect to run whenever the date changes
@@ -77,6 +87,7 @@ function Calender() {
     for (let x = day; x > 0; x--) {
       daysArray.push({
         value: prevDays - x + 1,
+
         className: 'prev-date'
       });
     }
@@ -151,6 +162,8 @@ function Calender() {
 
   function goToNextMonth() {
     setDate(new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
+    // const newSelectedDayName = getDayName(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
+    // setSelectedDayName(newSelectedDayName);
   }
 
   function goToToday() {
@@ -266,6 +279,9 @@ function Calender() {
 
     }, 100);
 
+    // Use the clicked date to update the SelectedDayName
+  const newSelectedDayName = getDayName(new Date(date.getFullYear(), date.getMonth(), index));
+  setSelectedDayName(newSelectedDayName);
 
     if (days[index].className === 'prev-date' || days[index].className === 'next-date') {
       // Delay changing the month to wait for the 'active' class to be added
@@ -351,8 +367,8 @@ function Calender() {
         </div>
         <div class="right">
           <div class="today-date">
-            <div class="event-day">Wed</div>
-            <div class="event-date">17 January 2024</div>
+            <div class="event-day">{selectedDayName}</div>
+            <div class="event-date">{format(date, 'dd MMMM yyyy')}</div>
           </div>
           <div class="events"></div>
           <div class={`add-event-wrapper ${isAddEventActive ? 'active' : ''}`}>
