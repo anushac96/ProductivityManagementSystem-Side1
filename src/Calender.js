@@ -9,10 +9,10 @@ function Calender() {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]);
-  const [events, setEvents] = useState([]);
+
   const eventsContainerRef = React.useRef();
   // default event array
-  const eventsArr = [
+  let eventsArray = [
     {
       day: 17,
       month: 1,
@@ -44,7 +44,8 @@ function Calender() {
       ],
     },
   ];
-
+  const [eventsArr, setEventsArr] = useState(eventsArray);
+  const [events, setEvents] = useState([]);
   const [days, setDays] = useState([]);
   const [inputDate, setInputDate] = useState('');
   // Add state for controlling the visibility of the add-event-wrapper
@@ -71,7 +72,7 @@ function Calender() {
 
   useEffect(() => {
     initCalendar();
-  }, [date, inputDate]); // Update the effect to run whenever the date changes
+  }, [date, inputDate, eventsArr]); // Update the effect to run whenever the date changes
 
   function initCalendar() {
 
@@ -338,7 +339,9 @@ function Calender() {
 
         // TODO: when clicked on dates of next/prev month. That date should get selected and show in right
       }, 100);
+
     }
+    console.log("events are:", eventsArr);
   }
 
   const handleAddEvent = () => {
@@ -353,36 +356,20 @@ function Calender() {
   };
 
   function updateEvents(selectedDate) {
-    let eventsHtml = '';
     // Find events for the selected day
-    const eventsOnSelectedDay = eventsArr.find(event =>
-      event.day === selectedDate.getDate() &&
-      event.month === selectedDate.getMonth() + 1 &&
-      event.year === selectedDate.getFullYear()
+    const eventsOnSelectedDay = eventsArr.find(
+      (event) =>
+        event.day === selectedDate.getDate() &&
+        event.month === selectedDate.getMonth() + 1 &&
+        event.year === selectedDate.getFullYear()
     );
 
+    // Set events state with the actual events data
     if (eventsOnSelectedDay) {
-      // Show events on the document
-      eventsOnSelectedDay.events.forEach((event) => {
-        eventsHtml += `<div class="event">
-          <div class="title">
-            <i class="fas fa-circle"></i>
-            <h3 class="event-title">${event.title}</h3>
-          </div>
-          <div class="event-time">
-            <span class="event-time">${event.time}</span>
-          </div>
-        </div>`;
-      });
+      setEvents(eventsOnSelectedDay.events);
     } else {
-      eventsHtml = `<div class="no-event">
-        <h3>No Events</h3>
-      </div>`;
+      setEvents([]); // No events for the selected day
     }
-
-    setEvents(eventsHtml);
-    // Update the events container using the ref
-    eventsContainerRef.current.innerHTML = eventsHtml;
   }
 
   const handleAddEventSubmit = () => {
@@ -423,19 +410,33 @@ function Calender() {
 
     if (existingEventsOnDay) {
       // Update existing events on the selected day
-      existingEventsOnDay.events.push(newEvent);
+      const updatedEventsArr = eventsArr.map(event =>
+        event === existingEventsOnDay
+          ? { ...existingEventsOnDay, events: [...existingEventsOnDay.events, newEvent] }
+          : event
+      );
+      setEventsArr(updatedEventsArr);
+
+      // Update events being displayed with a callback
+      setEventsArr(prevEventsArr => {
+        updateEvents(selectedDayIndex);
+        return prevEventsArr;
+      });
     } else {
       // Add a new entry for the selected day
-      eventsArr.push({
-        day: selectedDayIndex.getDate(),
-        month: selectedDayIndex.getMonth() + 1,
-        year: selectedDayIndex.getFullYear(),
-        events: [newEvent],
-      });
-    }
+      setEventsArr(prevEventsArr => [
+        ...prevEventsArr,
+        {
+          day: selectedDayIndex.getDate(),
+          month: selectedDayIndex.getMonth() + 1,
+          year: selectedDayIndex.getFullYear(),
+          events: [newEvent],
+        }
+      ]);
 
-    // Update events being displayed
-    updateEvents(selectedDayIndex);
+      // Update events being displayed
+      updateEvents(selectedDayIndex);
+    }
 
     // Close the add-event-wrapper
     toggleAddEvent();
@@ -487,7 +488,25 @@ function Calender() {
             <div class="event-day">{selectedDayName}</div>
             <div class="event-date">{format(selectedDayIndex, 'dd MMMM yyyy')}</div>
           </div>
-          <div ref={eventsContainerRef} class="events"></div>
+          <div ref={eventsContainerRef} class="events">
+            {events.length > 0 ? (
+              events.map((event, index) => (
+                <div key={index} class="event">
+                  <div class="title">
+                    <i class="fas fa-circle"></i>
+                    <h3 class="event-title">{event.title}</h3>
+                  </div>
+                  <div class="event-time">
+                    <span class="event-time">{event.time}</span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div class="no-event">
+                <h3>No Events</h3>
+              </div>
+            )}
+          </div>
           <div class={`add-event-wrapper ${isAddEventActive ? 'active' : ''}`}>
             <div class="add-event-header">
               <div class="title">Add Event</div>
