@@ -4,6 +4,7 @@ import { format, parse, isValid } from 'date-fns';
 function Calender() {
 
   const [date, setDate] = useState(new Date());
+  const [showingMonth, setShowingMonth] = useState(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
   const [months, setMonths] = useState([
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -64,13 +65,15 @@ function Calender() {
 
   const [selectedDayName, setSelectedDayName] = useState(getDayName(new Date(date.getFullYear(), date.getMonth(), date.getDate())));
 
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
   useEffect(() => {
     initCalendar();
   }, [date, inputDate]); // Update the effect to run whenever the date changes
 
   function initCalendar() {
-    const month = date.getMonth();
-    const year = date.getFullYear();
+
     setDateContent(`${months[month]} ${year}`);
 
     const firstDay = new Date(year, month, 1);
@@ -158,12 +161,14 @@ function Calender() {
 
   function goToPreviousMonth() {
     setDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+    console.log("text:", new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+    setShowingMonth(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
   }
 
   function goToNextMonth() {
     setDate(new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
-    // const newSelectedDayName = getDayName(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
-    // setSelectedDayName(newSelectedDayName);
+    console.log("text:", new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
+    setShowingMonth(new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
   }
 
   function goToToday() {
@@ -242,6 +247,16 @@ function Calender() {
   };
 
   function handleDayClick(day, index) {
+    const currDate = new Date();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const prevLastDay = new Date(year, month, 0);
+    const prevDays = prevLastDay.getDate();
+    const lastDate = lastDay.getDate();
+    const leftDay = firstDay.getDay();
+    const nextDays = 7 - lastDay.getDay() - 1;
+
+    console.log("todays date: ", currDate.getMonth());
     // retain the classes other than active
     // Print all classes of the clicked date
     setTimeout(() => {
@@ -279,13 +294,18 @@ function Calender() {
 
     }, 100);
 
-    // Use the clicked date to update the SelectedDayName
-  const newSelectedDayName = getDayName(new Date(date.getFullYear(), date.getMonth(), index));
-  setSelectedDayName(newSelectedDayName);
+    console.log("showingMonth.getMonth(): ", showingMonth.getMonth());
+    console.log("date.getMonth():", date.getMonth());
 
-  // Use the clicked date to update the SelectedDayName
-  const newSelectedDayIndex = new Date(date.getFullYear(), date.getMonth(), index);
-  setSelectedDayIndex(newSelectedDayIndex);
+
+
+    // Use the clicked date to update the SelectedDayName
+    const newSelectedDayName = getDayName(new Date(date.getFullYear(), date.getMonth(), index - leftDay + 1));
+    setSelectedDayName(newSelectedDayName);
+
+    // Use the clicked date to update the SelectedDayName
+    const newSelectedDayIndex = new Date(date.getFullYear(), date.getMonth(), index - leftDay + 1);
+    setSelectedDayIndex(newSelectedDayIndex);
 
     if (days[index].className === 'prev-date' || days[index].className === 'next-date') {
       // Delay changing the month to wait for the 'active' class to be added
@@ -312,7 +332,7 @@ function Calender() {
 
         setDays(updatedDaysAfterMonthChange);
 
-        // TODO: when clicked on dates of next/prev month. That date should get selected
+        // TODO: when clicked on dates of next/prev month. That date should get selected and show in right
       }, 100);
     }
   }
@@ -335,7 +355,7 @@ function Calender() {
           <div class="calendar">
             <div class="month">
               <i class="fa fa-angle-left prev" onClick={goToPreviousMonth}></i>
-              <div class="date">January 2024</div>
+              <div class="date"></div>
               <i class="fa fa-angle-right next" onClick={goToNextMonth}></i>
             </div>
             <div class="weekdays">
