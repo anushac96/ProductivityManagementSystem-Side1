@@ -354,38 +354,34 @@ function Calender() {
 
   function updateEvents(selectedDate) {
     let eventsHtml = '';
-    // get event for active day
-    eventsArr.forEach((event) => {
-      if (
-        selectedDate.getDate() === event.day &&
-        selectedDate.getMonth() + 1 === event.month &&
-        selectedDate.getFullYear() === event.year
-      ) {
-        // then show events on document
-        event.events.forEach((event) => {
-          eventsHtml += `<div class="event">
-              <div class="title">
-                <i class="fas fa-circle"></i>
-                <h3 class="event-title">${event.title}</h3>
-              </div>
-              <div class="event-time">
-                <span class="event-time">${event.time}</span>
-              </div>
-          </div>`;
-        });
-      }
-    });
+    // Find events for the selected day
+    const eventsOnSelectedDay = eventsArr.find(event =>
+      event.day === selectedDate.getDate() &&
+      event.month === selectedDate.getMonth() + 1 &&
+      event.year === selectedDate.getFullYear()
+    );
 
-    if (eventsHtml === '') {
+    if (eventsOnSelectedDay) {
+      // Show events on the document
+      eventsOnSelectedDay.events.forEach((event) => {
+        eventsHtml += `<div class="event">
+          <div class="title">
+            <i class="fas fa-circle"></i>
+            <h3 class="event-title">${event.title}</h3>
+          </div>
+          <div class="event-time">
+            <span class="event-time">${event.time}</span>
+          </div>
+        </div>`;
+      });
+    } else {
       eventsHtml = `<div class="no-event">
-              <h3>No Events</h3>
-          </div>`;
+        <h3>No Events</h3>
+      </div>`;
     }
 
     setEvents(eventsHtml);
-    // You can use eventsContainerRef.current to access the events container in the JSX.
-    // This assumes you've added a ref attribute to the events container in your JSX.
-    // For example: <div ref={eventsContainerRef} className="events"></div>
+    // Update the events container using the ref
     eventsContainerRef.current.innerHTML = eventsHtml;
   }
 
