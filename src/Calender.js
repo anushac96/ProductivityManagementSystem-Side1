@@ -13,39 +13,39 @@ function Calender() {
   const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   const eventsContainerRef = React.useRef();
   // default event array
-  let eventsArray = [
-    {
-      day: 17,
-      month: 1,
-      year: 2024,
-      events: [
-        {
-          title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
-          time: "10:00 AM",
-        },
-        {
-          title: "Event 2",
-          time: "11:00 AM",
-        },
-      ],
-    },
-    {
-      day: 19,
-      month: 1,
-      year: 2024,
-      events: [
-        {
-          title: "Event 1 bla bla bla dolar sit genfa tersd dsad ",
-          time: "10:00 AM",
-        },
-        {
-          title: "Event 2",
-          time: "11:00 AM",
-        },
-      ],
-    },
-  ];
-  const [eventsArr, setEventsArr] = useState(eventsArray);
+  // let eventsArray = [
+  //   {
+  //     day: 17,
+  //     month: 1,
+  //     year: 2024,
+  //     events: [
+  //       {
+  //         title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
+  //         time: "10:00 AM",
+  //       },
+  //       {
+  //         title: "Event 2",
+  //         time: "11:00 AM",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     day: 19,
+  //     month: 1,
+  //     year: 2024,
+  //     events: [
+  //       {
+  //         title: "Event 1 bla bla bla dolar sit genfa tersd dsad ",
+  //         time: "10:00 AM",
+  //       },
+  //       {
+  //         title: "Event 2",
+  //         time: "11:00 AM",
+  //       },
+  //     ],
+  //   },
+  // ];
+  const [eventsArr, setEventsArr] = useState([]);
   const [events, setEvents] = useState([]);
   const [days, setDays] = useState([]);
   const [inputDate, setInputDate] = useState('');
@@ -432,6 +432,8 @@ function Calender() {
     console.log("selectedDayIndex: ", selectedDayIndex);
     // Close the add-event-wrapper
     toggleAddEvent();
+
+    saveEvents(); // Call saveEvents after updating state
   };
 
   const handleEventClick = (index) => {
@@ -447,11 +449,28 @@ function Calender() {
       }
       return event;
     });
-  
+
     // Update the state with the modified events array
     setEventsArr(updatedEventsArr);
+
+    // Save events to localStorage
+    saveEvents();
   };
-  
+
+  // Function to save events in local storage
+const saveEvents = () => {
+  localStorage.setItem("events", JSON.stringify(eventsArr));
+};
+
+  // Function to get events from local storage
+  const getEvents = () => {
+    // Check if events are already saved in local storage, then return events, else do nothing
+    const storedEvents = localStorage.getItem("events");
+    if (storedEvents) {
+      setEventsArr(JSON.parse(storedEvents));
+    }
+  };
+
   return (
     <body>
       <div class="container">
