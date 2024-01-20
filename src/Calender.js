@@ -10,6 +10,7 @@ function Calender() {
     'July', 'August', 'September', 'October', 'November', 'December'
   ]);
 
+  const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   const eventsContainerRef = React.useRef();
   // default event array
   let eventsArray = [
@@ -72,7 +73,7 @@ function Calender() {
 
   useEffect(() => {
     initCalendar();
-  }, [date, inputDate, eventsArr]); // Update the effect to run whenever the date changes
+  }, [date, inputDate, eventsArr, events]); // Update the effect to run whenever the date changes
 
   function initCalendar() {
 
@@ -296,16 +297,11 @@ function Calender() {
 
     }, 100);
 
-    console.log("showingMonth.getMonth(): ", showingMonth.getMonth());
-    console.log("date.getMonth():", date.getMonth());
-
-
-
     // Use the clicked date to update the SelectedDayName
     const newSelectedDayName = getDayName(new Date(date.getFullYear(), date.getMonth(), index - leftDay + 1));
     setSelectedDayName(newSelectedDayName);
 
-    // Use the clicked date to update the SelectedDayName
+    // Use the clicked date to update the SelectedDayIndex
     const newSelectedDayIndex = new Date(date.getFullYear(), date.getMonth(), index - leftDay + 1);
     setSelectedDayIndex(newSelectedDayIndex);
 
@@ -415,33 +411,47 @@ function Calender() {
           ? { ...existingEventsOnDay, events: [...existingEventsOnDay.events, newEvent] }
           : event
       );
-      setEventsArr(updatedEventsArr);
 
-      // Update events being displayed with a callback
-      setEventsArr(prevEventsArr => {
-        updateEvents(selectedDayIndex);
-        return prevEventsArr;
-      });
+      // Update the state and call the function to update events based on the selected date
+      setEventsArr(updatedEventsArr);
+      updateEvents(selectedDayIndex);
     } else {
       // Add a new entry for the selected day
-      setEventsArr(prevEventsArr => [
-        ...prevEventsArr,
-        {
-          day: selectedDayIndex.getDate(),
-          month: selectedDayIndex.getMonth() + 1,
-          year: selectedDayIndex.getFullYear(),
-          events: [newEvent],
-        }
-      ]);
+      const newEntry = {
+        day: selectedDayIndex.getDate(),
+        month: selectedDayIndex.getMonth() + 1,
+        year: selectedDayIndex.getFullYear(),
+        events: [newEvent],
+      };
 
-      // Update events being displayed
+      // Update the state and call the function to update events based on the selected date
+      setEventsArr(prevEventsArr => [...prevEventsArr, newEntry]);
       updateEvents(selectedDayIndex);
     }
 
+    console.log("selectedDayIndex: ", selectedDayIndex);
     // Close the add-event-wrapper
     toggleAddEvent();
   };
 
+  const handleEventClick = (index) => {
+    // Remove the clicked event from the events array
+    const updatedEventsArr = eventsArr.map((event) => {
+      if (
+        event.day === selectedDayIndex.getDate() &&
+        event.month === selectedDayIndex.getMonth() + 1 &&
+        event.year === selectedDayIndex.getFullYear()
+      ) {
+        // Remove the selected event from the events array
+        event.events = event.events.filter((_, i) => i !== index);
+      }
+      return event;
+    });
+  
+    // Update the state with the modified events array
+    setEventsArr(updatedEventsArr);
+  };
+  
   return (
     <body>
       <div class="container">
@@ -491,7 +501,11 @@ function Calender() {
           <div ref={eventsContainerRef} class="events">
             {events.length > 0 ? (
               events.map((event, index) => (
-                <div key={index} class="event">
+                <div
+                  key={index}
+                  class={`event ${selectedEventIndex === index ? 'selected' : ''}`}
+                  onClick={() => handleEventClick(index)}
+                >
                   <div class="title">
                     <i class="fas fa-circle"></i>
                     <h3 class="event-title">{event.title}</h3>
