@@ -354,12 +354,14 @@ function Calender() {
 
   function updateEvents(selectedDate) {
     let eventsHtml = '';
+    // get event for active day
     eventsArr.forEach((event) => {
       if (
         selectedDate.getDate() === event.day &&
         selectedDate.getMonth() + 1 === event.month &&
         selectedDate.getFullYear() === event.year
       ) {
+        // then show events on document
         event.events.forEach((event) => {
           eventsHtml += `<div class="event">
               <div class="title">
@@ -387,6 +389,62 @@ function Calender() {
     eventsContainerRef.current.innerHTML = eventsHtml;
   }
 
+  const handleAddEventSubmit = () => {
+    if (!eventName || !eventTimeFrom || !eventTimeTo) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    // Convert time to 24-hour format
+    const timeFrom = format(parse(eventTimeFrom, 'h:mm a', new Date()), 'HH:mm');
+    const timeTo = format(parse(eventTimeTo, 'h:mm a', new Date()), 'HH:mm');
+
+    // Check if the event is already added
+    const eventExist = eventsArr.some(event =>
+      event.day === selectedDayIndex.getDate() &&
+      event.month === selectedDayIndex.getMonth() + 1 &&
+      event.year === selectedDayIndex.getFullYear() &&
+      event.events.some(e => e.title === eventName)
+    );
+
+    if (eventExist) {
+      alert("Event already added");
+      return;
+    }
+
+    // Create a new event object
+    const newEvent = {
+      title: eventName,
+      time: `${timeFrom} - ${timeTo}`,
+    };
+
+    // Check if there are events on the selected day
+    const existingEventsOnDay = eventsArr.find(event =>
+      event.day === selectedDayIndex.getDate() &&
+      event.month === selectedDayIndex.getMonth() + 1 &&
+      event.year === selectedDayIndex.getFullYear()
+    );
+
+    if (existingEventsOnDay) {
+      // Update existing events on the selected day
+      existingEventsOnDay.events.push(newEvent);
+    } else {
+      // Add a new entry for the selected day
+      eventsArr.push({
+        day: selectedDayIndex.getDate(),
+        month: selectedDayIndex.getMonth() + 1,
+        year: selectedDayIndex.getFullYear(),
+        events: [newEvent],
+      });
+    }
+
+    // Update events being displayed
+    updateEvents(selectedDayIndex);
+
+    // Close the add-event-wrapper
+    toggleAddEvent();
+  };
+
   return (
     <body>
       <div class="container">
@@ -398,13 +456,13 @@ function Calender() {
               <i class="fa fa-angle-right next" onClick={goToNextMonth}></i>
             </div>
             <div class="weekdays">
-              <div>sun</div>
-              <div>mon</div>
-              <div>tue</div>
-              <div>wed</div>
-              <div>thrus</div>
-              <div>fri</div>
-              <div>sat</div>
+              <div>Sun</div>
+              <div>Mon</div>
+              <div>Tue</div>
+              <div>Wed</div>
+              <div>Thu</div>
+              <div>Fri</div>
+              <div>Sat</div>
             </div>
             <div class="days">
               {days.map((day, index) => (
@@ -463,7 +521,7 @@ function Calender() {
               </div>
             </div>
             <div class="add-event-footer">
-              <button class="add-event-btn" onClick={handleAddEvent}>Add Event</button>
+              <button class="add-event-btn" onClick={handleAddEventSubmit}>Add Event</button>
             </div>
           </div>
           <button class="add-event" onClick={toggleAddEvent}>
