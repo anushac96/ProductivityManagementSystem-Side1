@@ -9,7 +9,8 @@ function Calender() {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]);
-
+  const [events, setEvents] = useState([]);
+  const eventsContainerRef = React.useRef();
   // default event array
   const eventsArr = [
     {
@@ -33,7 +34,7 @@ function Calender() {
       year: 2024,
       events: [
         {
-          title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
+          title: "Event 1 bla bla bla dolar sit genfa tersd dsad ",
           time: "10:00 AM",
         },
         {
@@ -307,6 +308,9 @@ function Calender() {
     const newSelectedDayIndex = new Date(date.getFullYear(), date.getMonth(), index - leftDay + 1);
     setSelectedDayIndex(newSelectedDayIndex);
 
+    // Call the function to update events based on the selected date
+    updateEvents(newSelectedDayIndex);
+
     if (days[index].className === 'prev-date' || days[index].className === 'next-date') {
       // Delay changing the month to wait for the 'active' class to be added
       setTimeout(() => {
@@ -347,6 +351,41 @@ function Calender() {
     // Close the add-event-wrapper
     setAddEventActive(false);
   };
+
+  function updateEvents(selectedDate) {
+    let eventsHtml = '';
+    eventsArr.forEach((event) => {
+      if (
+        selectedDate.getDate() === event.day &&
+        selectedDate.getMonth() + 1 === event.month &&
+        selectedDate.getFullYear() === event.year
+      ) {
+        event.events.forEach((event) => {
+          eventsHtml += `<div class="event">
+              <div class="title">
+                <i class="fas fa-circle"></i>
+                <h3 class="event-title">${event.title}</h3>
+              </div>
+              <div class="event-time">
+                <span class="event-time">${event.time}</span>
+              </div>
+          </div>`;
+        });
+      }
+    });
+
+    if (eventsHtml === '') {
+      eventsHtml = `<div class="no-event">
+              <h3>No Events</h3>
+          </div>`;
+    }
+
+    setEvents(eventsHtml);
+    // You can use eventsContainerRef.current to access the events container in the JSX.
+    // This assumes you've added a ref attribute to the events container in your JSX.
+    // For example: <div ref={eventsContainerRef} className="events"></div>
+    eventsContainerRef.current.innerHTML = eventsHtml;
+  }
 
   return (
     <body>
@@ -394,7 +433,7 @@ function Calender() {
             <div class="event-day">{selectedDayName}</div>
             <div class="event-date">{format(selectedDayIndex, 'dd MMMM yyyy')}</div>
           </div>
-          <div class="events"></div>
+          <div ref={eventsContainerRef} class="events"></div>
           <div class={`add-event-wrapper ${isAddEventActive ? 'active' : ''}`}>
             <div class="add-event-header">
               <div class="title">Add Event</div>
