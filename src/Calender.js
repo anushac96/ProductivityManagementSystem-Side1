@@ -13,40 +13,54 @@ function Calender() {
   const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   const eventsContainerRef = React.useRef();
   // default event array
-  // let eventsArray = [
-  //   {
-  //     day: 17,
-  //     month: 1,
-  //     year: 2024,
-  //     events: [
-  //       {
-  //         title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
-  //         time: "10:00 AM",
-  //       },
-  //       {
-  //         title: "Event 2",
-  //         time: "11:00 AM",
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     day: 19,
-  //     month: 1,
-  //     year: 2024,
-  //     events: [
-  //       {
-  //         title: "Event 1 bla bla bla dolar sit genfa tersd dsad ",
-  //         time: "10:00 AM",
-  //       },
-  //       {
-  //         title: "Event 2",
-  //         time: "11:00 AM",
-  //       },
-  //     ],
-  //   },
-  // ];
-  const [eventsArr, setEventsArr] = useState([]);
-  const [events, setEvents] = useState([]);
+  let eventsArray = [
+    {
+      day: 17,
+      month: 1,
+      year: 2024,
+      events: [
+        {
+          title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
+          time: "10:00 AM",
+        },
+        {
+          title: "Event 2",
+          time: "11:00 AM",
+        },
+      ],
+    },
+    {
+      day: 19,
+      month: 1,
+      year: 2024,
+      events: [
+        {
+          title: "Event 1 bla bla bla dolar sit genfa tersd dsad ",
+          time: "10:00 AM",
+        },
+        {
+          title: "Event 2",
+          time: "11:00 AM",
+        },
+      ],
+    },
+  ];
+  // Function to get events from local storage
+
+
+  //const [events, setEvents] = useState([]);
+  //const [eventsArr, setEventsArr] = useState(events);
+
+  const [events, setEvents] = useState(() => {
+    const storedEvents = window.sessionStorage.getItem("eventsOfPerticularDateStored");
+    return storedEvents ? JSON.parse(storedEvents) : [];
+  });
+  
+  const [eventsArr, setEventsArr] = useState(() => {
+    const storedEventsArr = window.sessionStorage.getItem('eventsStored');
+    return storedEventsArr ? JSON.parse(storedEventsArr) : events;
+  });
+
   const [days, setDays] = useState([]);
   const [inputDate, setInputDate] = useState('');
   // Add state for controlling the visibility of the add-event-wrapper
@@ -71,9 +85,54 @@ function Calender() {
   const month = date.getMonth();
   const year = date.getFullYear();
 
+
+  //   const fetchEvents = () => {
+  //     // Check if events are already saved in local storage, then return events, else do nothing
+  //     const storedEvents = localStorage.getItem("eventsStored");
+  //     if (storedEvents) {
+  //       setEventsArr(prevEventsArr => [...prevEventsArr, ...JSON.parse(storedEvents)]);
+
+  //     }
+  //   };
+
+
+
+  //  // Function to save events in local storage
+  //  const saveEvents = () => {
+  //   window.localStorage.setItem("eventsStored", JSON.stringify(eventsArr));
+  // };
+
+
+  // useEffect(() => {
+  //   console.log("getting events");
+  //   const data = window.sessionStorage.getItem('eventsStored');
+  //   console.log("data: ", data);
+  //   if (data)
+  //     setEventsArr(JSON.parse(data));
+
+  //   const data1 = window.sessionStorage.getItem("eventsOfPerticularDateStored");
+  //   console.log("date1: ", data1);
+  //   if (data1)
+  //     setEvents(JSON.parse(data1));
+  //   initCalendar();
+  // }, []); // Update the effect to run whenever the date changes
+
+
+
+  useEffect(() => {
+    console.log("storing value");
+    window.sessionStorage.setItem('eventsStored', JSON.stringify(eventsArr));
+    window.sessionStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
+  }); // Update the effect to run whenever the date changes
+
   useEffect(() => {
     initCalendar();
+    //console.log("storing value");
+    //window.localStorage.setItem('eventsStored', JSON.stringify(eventsArr));
+    //window.localStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
+    //fetchEvents();
   }, [date, inputDate, eventsArr, events]); // Update the effect to run whenever the date changes
+
 
   function initCalendar() {
 
@@ -147,13 +206,17 @@ function Calender() {
 
     // Update the state with the calculated days
     setDays(daysArray);
+
   }
+
+
 
   function setDateContent(content) {
     const dateElement = document.querySelector('.calendar .month .date');
     if (dateElement) {
       dateElement.innerHTML = content;
     }
+
   }
 
   function isSameDay(date1, date2) {
@@ -254,18 +317,14 @@ function Calender() {
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const prevLastDay = new Date(year, month, 0);
-    const prevDays = prevLastDay.getDate();
-    const lastDate = lastDay.getDate();
     const leftDay = firstDay.getDay();
-    const nextDays = 7 - lastDay.getDay() - 1;
 
-    console.log("todays date: ", currDate.getMonth());
     // retain the classes other than active
     // Print all classes of the clicked date
     setTimeout(() => {
       const clickedDateElement = document.querySelector(`.day:nth-child(${index + 1})`);
       const clickedDateClasses = Array.from(clickedDateElement.classList);
-      console.log('Clicked Date Classes:', clickedDateClasses);
+
 
       // Update the state to mark the selected day as active
       const updatedDays = days.map((d, i) => {
@@ -352,6 +411,8 @@ function Calender() {
   };
 
   function updateEvents(selectedDate) {
+
+    console.log("events array in updated method: ", eventsArr);
     // Find events for the selected day
     const eventsOnSelectedDay = eventsArr.find(
       (event) =>
@@ -359,14 +420,23 @@ function Calender() {
         event.month === selectedDate.getMonth() + 1 &&
         event.year === selectedDate.getFullYear()
     );
-
+    console.log("event are before update: ", events);
+    console.log("eventsOnSelectedDay; ", eventsOnSelectedDay);
     // Set events state with the actual events data
     if (eventsOnSelectedDay) {
+      console.log("eventsOnSelectedDay is true");
       setEvents(eventsOnSelectedDay.events);
+
     } else {
+      console.log("eventsOnSelectedDay is false");
       setEvents([]); // No events for the selected day
     }
   }
+  // useEffect to perform actions after events is updated
+  useEffect(() => {
+    console.log("event are after update: ", events);
+  }, [events]);
+
 
   const handleAddEventSubmit = () => {
     if (!eventName || !eventTimeFrom || !eventTimeTo) {
@@ -406,15 +476,16 @@ function Calender() {
 
     if (existingEventsOnDay) {
       // Update existing events on the selected day
-      const updatedEventsArr = eventsArr.map(event =>
-        event === existingEventsOnDay
-          ? { ...existingEventsOnDay, events: [...existingEventsOnDay.events, newEvent] }
-          : event
+      setEventsArr((prevEventsArr) =>
+        prevEventsArr.map((event) =>
+          event === existingEventsOnDay
+            ? { ...existingEventsOnDay, events: [...existingEventsOnDay.events, newEvent] }
+            : event
+        )
       );
 
-      // Update the state and call the function to update events based on the selected date
-      setEventsArr(updatedEventsArr);
-      updateEvents(selectedDayIndex);
+      //console.log("calling updateEvents method");
+      //updateEvents(selectedDayIndex);
     } else {
       // Add a new entry for the selected day
       const newEntry = {
@@ -424,17 +495,32 @@ function Calender() {
         events: [newEvent],
       };
 
+      console.log("newEntry: ", newEntry);
       // Update the state and call the function to update events based on the selected date
       setEventsArr(prevEventsArr => [...prevEventsArr, newEntry]);
-      updateEvents(selectedDayIndex);
-    }
 
-    console.log("selectedDayIndex: ", selectedDayIndex);
+      console.log("calling updateEvents method");
+      //updateEvents(selectedDayIndex);
+    }
+    //console.log("events array after submit: ",eventsArr);
+    //console.log("selectedDayIndex: ", selectedDayIndex);
     // Close the add-event-wrapper
     toggleAddEvent();
 
-    saveEvents(); // Call saveEvents after updating state
+    //saveEvents(); // Call saveEvents after updating state
   };
+
+  // useEffect to perform actions after eventsArr is updated
+  useEffect(() => {
+    console.log("events array after submit: ", eventsArr);
+    console.log("selectedDayIndex: ", selectedDayIndex);
+    // Additional actions or side effects can be performed here
+    updateEvents(selectedDayIndex); // Call updateEvents after updating state
+
+    // Update localStorage
+    window.sessionStorage.setItem('eventsStored', JSON.stringify(eventsArr));
+    window.sessionStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
+  }, [eventsArr]);
 
   const handleEventClick = (index) => {
     // Remove the clicked event from the events array
@@ -454,22 +540,20 @@ function Calender() {
     setEventsArr(updatedEventsArr);
 
     // Save events to localStorage
-    saveEvents();
+    //saveEvents();
   };
 
-  // Function to save events in local storage
-const saveEvents = () => {
-  localStorage.setItem("events", JSON.stringify(eventsArr));
-};
+  // useEffect to perform actions after eventsArr is updated
+  useEffect(() => {
+    console.log("events array after submit: ", eventsArr);
+    console.log("selectedDayIndex: ", selectedDayIndex);
+    // Additional actions or side effects can be performed here
+    updateEvents(selectedDayIndex); // Call updateEvents after updating state
 
-  // Function to get events from local storage
-  const getEvents = () => {
-    // Check if events are already saved in local storage, then return events, else do nothing
-    const storedEvents = localStorage.getItem("events");
-    if (storedEvents) {
-      setEventsArr(JSON.parse(storedEvents));
-    }
-  };
+    // Update localStorage
+    window.sessionStorage.setItem('eventsStored', JSON.stringify(eventsArr));
+    window.sessionStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
+  }, [eventsArr]);
 
   return (
     <body>
