@@ -663,7 +663,7 @@ calendar {
 
 .card {
   position: fixed;
-  bottom: 300px;
+  bottom: 100px;
   right: 200px;
   display: flex;
   flex-direction: column;
@@ -689,3 +689,42 @@ calendar {
   color: #011f4b;
   background: #b3cde0;
 }
+
+.card .current-song .audio{
+  display: none;
+}
+
+.card .current-song .img-wrap{
+  position: relative;
+  margin: 0 auto;
+  width: 270px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0px 10px 40px 0px rgba(39,70,132,0.7);
+}
+.card .current-song .img-wrap img{
+  width: auto;
+  height: 100%;
+}
+
+.card .current-song .song-name{
+  margin-top: 30px;
+  font-size: 22px;
+}
+
+.card .current-song .song-author{
+  color: #03396c;
+  /* nsc */
+}
+
+.card .current-song .time{
+  display: flex;
+  margin: 0 auto;
+  width: 240px;
+  height: 5px;
+  background: #03396c;
+  border-radius: 5px;
+  cursor: pointer;
+} 
+
