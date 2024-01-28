@@ -4,6 +4,7 @@ import Settings from './Settings';
 import { useState } from 'react';
 import SettingsContext from './SettingsContext';
 import Calender from './Calender';
+import MediaPlayer from './MediaPlayer';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       </SettingsContext.Provider>
     </main>
       <Calender/>
+      <MediaPlayer/>
     </>
   );
 }

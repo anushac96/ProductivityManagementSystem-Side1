@@ -661,18 +661,29 @@ calendar {
   pointer-events: none;
 }
 
+.mp{
+  font-family: "Rubik",sans-serif;
+  color: #071739;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .card {
   position: fixed;
-  bottom: 100px;
+  bottom: 3px;
   right: 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   max-width: 371px;
-  padding: 0 7px;
+  padding: 0 5px;
+  margin-top: 40px;
   border-radius: 20px;
-  color: #b3cde0;
+  /* text color */
+  color: #b3cde0; 
   font-weight: 100;
   box-shadow: 0px 0px 70px 0px #274684;
   background: #011f4b;
@@ -688,6 +699,7 @@ calendar {
   border-radius: 20px;
   color: #011f4b;
   background: #b3cde0;
+  
 }
 
 .card .current-song .audio{
@@ -697,8 +709,8 @@ calendar {
 .card .current-song .img-wrap{
   position: relative;
   margin: 0 auto;
-  width: 270px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   overflow: hidden;
   border-radius: 20px;
   box-shadow: 0px 10px 40px 0px rgba(39,70,132,0.7);
@@ -715,16 +727,155 @@ calendar {
 
 .card .current-song .song-author{
   color: #03396c;
-  /* nsc */
+   
 }
 
 .card .current-song .time{
   display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  width: 240px;
+}
+
+.card .current-song #timeline{
+  position: relative;
   margin: 0 auto;
   width: 240px;
   height: 5px;
   background: #03396c;
   border-radius: 5px;
   cursor: pointer;
-} 
+}
 
+.card .current-song #timeline:hover .hover-playhead{
+  opacity: 1;
+}
+
+.card .current-song #timeline:hover .hover-playhead::before{
+  opacity: 1;
+}
+
+.card .current-song #timeline:hover .hover-playhead::after{
+  opacity: 1;
+}
+
+.card .current-song #timeline #playhead{
+  position: relative;
+  z-index: 2;
+  width: 0;
+  height: 5px;
+  border-radius: 5px;
+  background: #011f4b;
+}
+
+.card .current-song #timeline .hover-playhead{
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  width: 0;
+  height: 5px;
+  opacity: 0;
+  border-radius: 5px;
+  background: #274684;
+  transition: opacity 0.3s;
+}
+
+.card .current-song #timeline .hover-playhead::before{
+  opacity: 0;
+  content: attr(data-content);
+  display: block;
+  position: absolute;
+  top: -38px;
+  right: -23px;
+  width: 40px;
+  padding: 3px;
+  text-align: center;
+  color: white;
+  background: #274684;
+  border-radius: calc(20px-12px);
+}
+
+.card .current-song #timeline .hover-playhead::after{
+  opacity: 0;
+  content: "";
+  display: block;
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  border-top: 8px solid #274684;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+
+.card .current-song .controls{
+  margin-top: 10px;
+}
+
+.card .current-song .controls .button:focus{
+  outline: none;
+}
+
+.card .current-song .controls .button.play{
+  width: 50px;
+  height: 50px;
+  border: 1px solid #e2e2e2;
+}
+
+.card .current-song .controls .button.play:hover{
+  left: 0;
+  box-shadow: 0px 0px 15px 0px rgba(39,70,131,0.7);
+}
+
+.card .current-song .controls .button.play .fa-play{
+  transform: translateX(2px);
+}
+
+.card .current-song .controls .button.prev-next{
+  width: 35px;
+  height: 35px;
+}
+
+.card .current-song .controls .button.prev-next:hover{
+  transform: scale(1.2);
+}
+
+.card .play-list{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  height: 180px;
+  overflow-y: scroll;
+}
+
+.card .play-list .track{
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Adjusted to push items to both ends */
+  margin-bottom: 10px;
+  border-radius: calc(20px-10px);
+  border: 1px solid transparent;
+  cursor: pointer;
+  padding: 5px; /* Added padding for better spacing */
+}
+
+.card .play-list .track:hover{
+  background: #274684;
+  border-color: #274684;
+  position: relative;
+}
+
+.card .play-list .track:current-audio{
+  background: #274684;
+  box-shadow: 0px 0px 15px 0px #274684;
+}
+
+.card .play-list .track .track-img {
+  width: 30px; /* Adjust the width as needed */
+  height: 30px; /* Adjust the height as needed */
+  border-radius: 50%;
+  margin-right: 10px; /* Added margin to separate the image from text */
+}
+
+.card .play-list .track-discr {
+  flex: 1; /* Added to allow flexible sizing for track information */
+}
