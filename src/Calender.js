@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { format, parse, isValid } from 'date-fns';
 
 function Calender() {
-
+// TODO: when clicked on dates of next/prev month. That date should get selected and show in right
+// TODO: once events are deleted, the calander should not show any event sign 
   const [date, setDate] = useState(new Date());
   const [showingMonth, setShowingMonth] = useState(new Date(date.getFullYear(), date.getMonth(), date.getDate()));
   const [months, setMonths] = useState([
@@ -12,50 +13,12 @@ function Calender() {
 
   const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   const eventsContainerRef = React.useRef();
-  // default event array
-  let eventsArray = [
-    {
-      day: 17,
-      month: 1,
-      year: 2024,
-      events: [
-        {
-          title: "Event 1 lorem ipsun dolar sit genfa tersd dsad ",
-          time: "10:00 AM",
-        },
-        {
-          title: "Event 2",
-          time: "11:00 AM",
-        },
-      ],
-    },
-    {
-      day: 19,
-      month: 1,
-      year: 2024,
-      events: [
-        {
-          title: "Event 1 bla bla bla dolar sit genfa tersd dsad ",
-          time: "10:00 AM",
-        },
-        {
-          title: "Event 2",
-          time: "11:00 AM",
-        },
-      ],
-    },
-  ];
-  // Function to get events from local storage
-
-
-  //const [events, setEvents] = useState([]);
-  //const [eventsArr, setEventsArr] = useState(events);
 
   const [events, setEvents] = useState(() => {
     const storedEvents = window.sessionStorage.getItem("eventsOfPerticularDateStored");
     return storedEvents ? JSON.parse(storedEvents) : [];
   });
-  
+
   const [eventsArr, setEventsArr] = useState(() => {
     const storedEventsArr = window.sessionStorage.getItem('eventsStored');
     return storedEventsArr ? JSON.parse(storedEventsArr) : events;
@@ -85,40 +48,6 @@ function Calender() {
   const month = date.getMonth();
   const year = date.getFullYear();
 
-
-  //   const fetchEvents = () => {
-  //     // Check if events are already saved in local storage, then return events, else do nothing
-  //     const storedEvents = localStorage.getItem("eventsStored");
-  //     if (storedEvents) {
-  //       setEventsArr(prevEventsArr => [...prevEventsArr, ...JSON.parse(storedEvents)]);
-
-  //     }
-  //   };
-
-
-
-  //  // Function to save events in local storage
-  //  const saveEvents = () => {
-  //   window.localStorage.setItem("eventsStored", JSON.stringify(eventsArr));
-  // };
-
-
-  // useEffect(() => {
-  //   console.log("getting events");
-  //   const data = window.sessionStorage.getItem('eventsStored');
-  //   console.log("data: ", data);
-  //   if (data)
-  //     setEventsArr(JSON.parse(data));
-
-  //   const data1 = window.sessionStorage.getItem("eventsOfPerticularDateStored");
-  //   console.log("date1: ", data1);
-  //   if (data1)
-  //     setEvents(JSON.parse(data1));
-  //   initCalendar();
-  // }, []); // Update the effect to run whenever the date changes
-
-
-
   useEffect(() => {
     console.log("storing value");
     window.sessionStorage.setItem('eventsStored', JSON.stringify(eventsArr));
@@ -127,10 +56,6 @@ function Calender() {
 
   useEffect(() => {
     initCalendar();
-    //console.log("storing value");
-    //window.localStorage.setItem('eventsStored', JSON.stringify(eventsArr));
-    //window.localStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
-    //fetchEvents();
   }, [date, inputDate, eventsArr, events]); // Update the effect to run whenever the date changes
 
 
@@ -209,8 +134,6 @@ function Calender() {
 
   }
 
-
-
   function setDateContent(content) {
     const dateElement = document.querySelector('.calendar .month .date');
     if (dateElement) {
@@ -284,8 +207,6 @@ function Calender() {
         setEventTimeFrom(format(parsedTime, 'hh:mm a'));
       } else {
         console.log('Invalid Time From:', inputTime);
-        // Handle invalid time if needed
-        // setEventTimeFrom('');
       }
     }
 
@@ -303,8 +224,6 @@ function Calender() {
         setEventTimeTo(format(parsedTime, 'hh:mm a'));
       } else {
         console.log('Invalid Time To:', inputTime);
-        // Handle invalid time if needed
-        // setEventTimeTo('');
       }
     }
 
@@ -391,8 +310,6 @@ function Calender() {
         });
 
         setDays(updatedDaysAfterMonthChange);
-
-        // TODO: when clicked on dates of next/prev month. That date should get selected and show in right
       }, 100);
 
     }
@@ -483,9 +400,6 @@ function Calender() {
             : event
         )
       );
-
-      //console.log("calling updateEvents method");
-      //updateEvents(selectedDayIndex);
     } else {
       // Add a new entry for the selected day
       const newEntry = {
@@ -498,16 +412,9 @@ function Calender() {
       console.log("newEntry: ", newEntry);
       // Update the state and call the function to update events based on the selected date
       setEventsArr(prevEventsArr => [...prevEventsArr, newEntry]);
-
-      console.log("calling updateEvents method");
-      //updateEvents(selectedDayIndex);
     }
-    //console.log("events array after submit: ",eventsArr);
-    //console.log("selectedDayIndex: ", selectedDayIndex);
     // Close the add-event-wrapper
     toggleAddEvent();
-
-    //saveEvents(); // Call saveEvents after updating state
   };
 
   // useEffect to perform actions after eventsArr is updated
@@ -538,9 +445,6 @@ function Calender() {
 
     // Update the state with the modified events array
     setEventsArr(updatedEventsArr);
-
-    // Save events to localStorage
-    //saveEvents();
   };
 
   // useEffect to perform actions after eventsArr is updated

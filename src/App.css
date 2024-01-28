@@ -50,76 +50,6 @@ label {
   text-transform: capitalize;
 }
 
-/*
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
-calender {
-  position: absolute;
-  min-height: 50vh;
-  display: flex;
-  align-items: left;
-  justify-content:left;
-  padding-bottom: 200px;
-  background-color: #e43f4a;
-  left: 0;
-  top: 0;
-  width: 700px;
-  padding-top: 100px;
-}
-
-calendar .container {
-  position: relative;
-  width: 700px;
-  min-height: 500px;
-  margin: 0 auto;
-  padding: 5px;
-  color: #fff;
-  display: flex;
-  border-radius: 10px;
-  background-color: #7c90c1;
-}
-/* size of white box */
-/*calendar .left {
-  width: 60%;
-  padding: 20px;
-}
-
-/*text inside white box*/
-/*calendar .calendarTag {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  color: #878895;
-  border-radius: 5px;
-  background-color: #fff;
-}
-
-calendar .calendarTag::before,
-calendar .calendarTag::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 100%;
-  width: 32px;
-  height: 97%;
-  border-radius: 0 5px 5px 0;
-  background-color: #59678b;
-  transform: translateY(-50%);
-}
-
-calendar .calendarTag::before {
-  height: 94%;
-  left: calc(100% + 22px);
-  background-color: #45506b;
-}*/
-
 * {
   margin: 0;
   padding: 0;
@@ -418,6 +348,7 @@ calendar {
   font-size: 2rem;
   font-weight: 400;
 }
+
 .container .right .today-date .event-date {
   font-size: 2rem;
   font-weight: 400;
@@ -433,6 +364,7 @@ calendar {
   flex-direction: column;
   padding-left: 4px;
 }
+
 .events .event {
   position: relative;
   width: 95%;
@@ -450,9 +382,11 @@ calendar {
 .events .event:nth-child(even) {
   background: transparent;
 }
+
 .events .event:hover {
   background: linear-gradient(90deg, #30384b, transparent);
 }
+
 .events .no-event {
   width: 100%;
   height: 100%;
@@ -470,6 +404,7 @@ calendar {
   pointer-events: none;
   font-size: 0.5rem;
 }
+
 .events .event .title .event-title {
   font-size: 1rem;
   font-weight: 400;
@@ -480,6 +415,7 @@ calendar {
   color: #fff;
   font-size: 0.5rem;
 }
+
 .events .event:hover .title i {
   color: #fff;
 }
@@ -491,6 +427,7 @@ calendar {
   margin-left: 15px;
   pointer-events: none;
 }
+
 .events .event:hover .event-time {
   color: #fff;
 }
@@ -509,6 +446,7 @@ calendar {
   color: #fff;
   transform: translateY(-50%);
 }
+
 .events .event:hover::after {
   display: flex;
 }
@@ -558,9 +496,11 @@ calendar {
   font-size: 1.5rem;
   cursor: pointer;
 }
+
 .add-event-header .close:hover {
   color: var(--primary-clr);
 }
+
 .add-event-header .title {
   font-size: 1.2rem;
   font-weight: 500;
@@ -620,7 +560,7 @@ calendar {
   width: 160px;
   font-size: 1rem;
   font-weight: 500;
-  outline: none; 
+  outline: none;
   border: none;
   color: #fff;
   background-color: var(--primary-clr);
@@ -661,8 +601,8 @@ calendar {
   pointer-events: none;
 }
 
-.mp{
-  font-family: "Rubik",sans-serif;
+.mp {
+  font-family: "Rubik", sans-serif;
   color: #071739;
   display: flex;
   justify-content: center;
@@ -683,14 +623,14 @@ calendar {
   margin-top: 40px;
   border-radius: 20px;
   /* text color */
-  color: #b3cde0; 
+  color: #b3cde0;
   font-weight: 100;
   box-shadow: 0px 0px 70px 0px #274684;
   background: #011f4b;
   overflow: hidden;
 }
 
-.card .current-song{
+.card .current-song {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -699,45 +639,46 @@ calendar {
   border-radius: 20px;
   color: #011f4b;
   background: #b3cde0;
-  
+
 }
 
-.card .current-song .audio{
+.card .current-song .audio {
   display: none;
 }
 
-.card .current-song .img-wrap{
+.card .current-song .img-wrap {
   position: relative;
   margin: 0 auto;
   width: 100px;
   height: 100px;
   overflow: hidden;
   border-radius: 20px;
-  box-shadow: 0px 10px 40px 0px rgba(39,70,132,0.7);
+  box-shadow: 0px 10px 40px 0px rgba(39, 70, 132, 0.7);
 }
-.card .current-song .img-wrap img{
+
+.card .current-song .img-wrap img {
   width: auto;
   height: 100%;
 }
 
-.card .current-song .song-name{
+.card .current-song .song-name {
   margin-top: 30px;
   font-size: 22px;
 }
 
-.card .current-song .song-author{
+.card .current-song .song-author {
   color: #03396c;
-   
+
 }
 
-.card .current-song .time{
+.card .current-song .time {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
   width: 240px;
 }
 
-.card .current-song #timeline{
+.card .current-song #timeline {
   position: relative;
   margin: 0 auto;
   width: 240px;
@@ -747,19 +688,19 @@ calendar {
   cursor: pointer;
 }
 
-.card .current-song #timeline:hover .hover-playhead{
+.card .current-song #timeline:hover .hover-playhead {
   opacity: 1;
 }
 
-.card .current-song #timeline:hover .hover-playhead::before{
+.card .current-song #timeline:hover .hover-playhead::before {
   opacity: 1;
 }
 
-.card .current-song #timeline:hover .hover-playhead::after{
+.card .current-song #timeline:hover .hover-playhead::after {
   opacity: 1;
 }
 
-.card .current-song #timeline #playhead{
+.card .current-song #timeline #playhead {
   position: relative;
   z-index: 2;
   width: 0;
@@ -768,7 +709,7 @@ calendar {
   background: #011f4b;
 }
 
-.card .current-song #timeline .hover-playhead{
+.card .current-song #timeline .hover-playhead {
   position: absolute;
   z-index: 1;
   top: 0;
@@ -780,7 +721,7 @@ calendar {
   transition: opacity 0.3s;
 }
 
-.card .current-song #timeline .hover-playhead::before{
+.card .current-song #timeline .hover-playhead::before {
   opacity: 0;
   content: attr(data-content);
   display: block;
@@ -795,7 +736,7 @@ calendar {
   border-radius: calc(20px-12px);
 }
 
-.card .current-song #timeline .hover-playhead::after{
+.card .current-song #timeline .hover-playhead::after {
   opacity: 0;
   content: "";
   display: block;
@@ -807,39 +748,39 @@ calendar {
   border-right: 8px solid transparent;
 }
 
-.card .current-song .controls{
+.card .current-song .controls {
   margin-top: 10px;
 }
 
-.card .current-song .controls .button:focus{
+.card .current-song .controls .button:focus {
   outline: none;
 }
 
-.card .current-song .controls .button.play{
+.card .current-song .controls .button.play {
   width: 50px;
   height: 50px;
   border: 1px solid #e2e2e2;
 }
 
-.card .current-song .controls .button.play:hover{
+.card .current-song .controls .button.play:hover {
   left: 0;
-  box-shadow: 0px 0px 15px 0px rgba(39,70,131,0.7);
+  box-shadow: 0px 0px 15px 0px rgba(39, 70, 131, 0.7);
 }
 
-.card .current-song .controls .button.play .fa-play{
+.card .current-song .controls .button.play .fa-play {
   transform: translateX(2px);
 }
 
-.card .current-song .controls .button.prev-next{
+.card .current-song .controls .button.prev-next {
   width: 35px;
   height: 35px;
 }
 
-.card .current-song .controls .button.prev-next:hover{
+.card .current-song .controls .button.prev-next:hover {
   transform: scale(1.2);
 }
 
-.card .play-list{
+.card .play-list {
   display: flex;
   flex-direction: column;
   padding: 10px;
@@ -847,35 +788,41 @@ calendar {
   overflow-y: scroll;
 }
 
-.card .play-list .track{
+.card .play-list .track {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Adjusted to push items to both ends */
+  justify-content: space-between;
+  /* Adjusted to push items to both ends */
   margin-bottom: 10px;
   border-radius: calc(20px-10px);
   border: 1px solid transparent;
   cursor: pointer;
-  padding: 5px; /* Added padding for better spacing */
+  padding: 5px;
+  /* Added padding for better spacing */
 }
 
-.card .play-list .track:hover{
+.card .play-list .track:hover {
   background: #274684;
   border-color: #274684;
   position: relative;
 }
 
-.card .play-list .track:current-audio{
+.card .play-list .track:current-audio {
   background: #274684;
   box-shadow: 0px 0px 15px 0px #274684;
 }
 
 .card .play-list .track .track-img {
-  width: 30px; /* Adjust the width as needed */
-  height: 30px; /* Adjust the height as needed */
+  width: 30px;
+  /* Adjust the width as needed */
+  height: 30px;
+  /* Adjust the height as needed */
   border-radius: 50%;
-  margin-right: 10px; /* Added margin to separate the image from text */
+  margin-right: 10px;
+  /* Added margin to separate the image from text */
 }
 
 .card .play-list .track-discr {
-  flex: 1; /* Added to allow flexible sizing for track information */
+  flex: 1;
+  /* Added to allow flexible sizing for track information */
 }

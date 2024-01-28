@@ -10,6 +10,7 @@ const red =  '#FF0000';
 const green = '#00FF00';
 
 function Timer(){
+    // TODO: retain timer
     const settingsInfo = useContext(SettingsContext);
     const [isPaused, setIsPaused] = useState(true);
     const [mode, setMode] = useState('work'); // can be work/break/null
