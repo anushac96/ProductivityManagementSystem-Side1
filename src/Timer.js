@@ -5,9 +5,12 @@ import PauseButton from './PauseButton';
 import SettingButton from './SettingButton';
 import { useContext, useState, useEffect, useRef } from 'react';
 import SettingsContext from './SettingsContext';
-
+// Import your alarm sound file
+import alarmSound from './clock-alarm-8761.mp3';
 const red =  '#FF0000';
 const green = '#00FF00';
+
+
 
 function Timer(){
     // TODO: retain timer
@@ -19,6 +22,9 @@ function Timer(){
     const secondsLeftRef = useRef(secondsLeft);
     const isPausedRef = useRef(isPaused);
     const modeRef = useRef(mode);
+
+    // Audio object for playing the alarm sound
+  const alarmAudio = new Audio(alarmSound);
 
     function tick(){
         secondsLeftRef.current--;
@@ -40,6 +46,9 @@ function Timer(){
     
             setSecondsLeft(nextSeconds);
             secondsLeftRef.current = nextSeconds;
+
+            // Play the alarm sound when the timer switches mode
+      alarmAudio.play();
         }
         
         initTimer();
