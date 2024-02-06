@@ -78,11 +78,11 @@ function Timer() {
                         setLastUpdatedDate(currentDate);
                     } else {
                         // Increment total hours worked by the duration of the work session
-                        console.log("Increment total hours worked by the duration of the work session");
-                        console.log("settingsInfo.workMinutes / 60:", settingsInfo.workMinutes / 60);
+                        //console.log("Increment total hours worked by the duration of the work session");
+                        //console.log("settingsInfo.workMinutes / 60:", settingsInfo.workMinutes / 60);
                         setTotalHoursWorked((prevTotal) => {
-                            console.log("before prevTotal:", prevTotal);
-                            console.log("before prevTotal:", prevTotal.toFixed(2));
+                            //console.log("before prevTotal:", prevTotal);
+                            //console.log("before prevTotal:", prevTotal.toFixed(2));
                             return prevTotal + settingsInfo.workMinutes;
                         });
                         // setTotalHoursWorked((prevTotal) => {
@@ -140,18 +140,55 @@ function Timer() {
         setTotalTimeWorked(storedTotalTimeWorked);
     }, []);
 
+    // // Update the total time worked for the selected tag during work sessions
+    // useEffect(() => {
+    //     const timerId = setInterval(() => {
+    //         if (!isPaused && mode === 'work') { // Only increment during work sessions
+    //             setTotalTimeWorked(prev => ({
+    //                 ...prev,
+    //                 [selectedTag]: (prev[selectedTag] || 0) + 1
+    //             }));
+    //         }
+    //     }, 1000);
+    //     return () => clearInterval(timerId);
+    // }, [isPaused, mode, selectedTag]);
+
+    // Function to update the total time worked for a specific tag
+    // const updateTotalTimeWorked = (tag, time) => {
+    //     setTotalTimeWorked(prev => ({
+    //         ...prev,
+    //         [tag]: time
+    //     }));
+    //     localStorage.setItem('totalTimeWorked', JSON.stringify({ ...totalTimeWorked, [tag]: time }));
+    // };
+
     // Update the total time worked for the selected tag during work sessions
     useEffect(() => {
+        let updatedValue = 0;
         const timerId = setInterval(() => {
-            if (!isPaused && mode === 'work') { // Only increment during work sessions
-                setTotalTimeWorked(prev => ({
-                    ...prev,
-                    [selectedTag]: (prev[selectedTag] || 0) + 1
-                }));
+            if (!isPaused && mode === 'work' && selectedTag) {
+                console.log("selected tag is: ", selectedTag);
+                // Only update if a tag is selected
+                setTotalTimeWorked(prev => {
+                    console.log('Previous value of', selectedTag, ':', prev[selectedTag]); // Log the previous value
+                    updatedValue = (prev[selectedTag] || 0) + 1;
+                    console.log("totalTimeWorked: ", totalTimeWorked);
+                    return { ...prev, [selectedTag]: updatedValue };
+                });
+                console.log("settingsInfo.workMinutes: ", settingsInfo.workMinutes);
+            }
+            if (secondsLeftRef.current === 0 && mode === 'work') {
+                // Store totalTimeWorked in local storage when a work cycle is completed
+                if (selectedTag) {
+                    localStorage.setItem('totalTimeWorked', JSON.stringify({ ...totalTimeWorked, [selectedTag]: (updatedValue+1) / 60 }));
+                }
             }
         }, 1000);
+    
+        // Execute the storage function on component unmount or dependency change
         return () => clearInterval(timerId);
-    }, [isPaused, mode, selectedTag]);
+    }, [isPaused, mode, selectedTag, settingsInfo.workMinutes]);
+    
 
     // Handle tag selection
     const handleTagChange = (event) => {
