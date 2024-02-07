@@ -3,12 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.5.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
+    "date-fns": "^3.2.0",
+    "express": "^4.18.2",
     "react": "^18.2.0",
+    "react-circular-progressbar": "^2.1.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "react-slider": "^2.0.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -34,5 +42,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0"
+  },
+  "description": "1. go to https://www.npmjs.com/ 2. type react-circular-progressbar 3. installation npm install --save react-circular-progressbar 4. usage import { CircularProgressbar } from 'react-circular-progressbar'; import 'react-circular-progressbar/dist/styles.css'; <CircularProgressbar value={60} text={'60%'} />;",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
