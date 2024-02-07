@@ -72,24 +72,60 @@ function Calender() {
         });
       });
   
-      // Schedule notifications for upcoming events
+      // Sort the upcoming events by their start time
       upcomingEvents.forEach((event) => {
-        event.events.forEach((e) => {
+        event.events.sort((a, b) => {
+          const timeA = parse(a.time.split('-')[0].trim(), 'HH:mm', new Date());
+          const timeB = parse(b.time.split('-')[0].trim(), 'HH:mm', new Date());
+          return timeA - timeB;
+        });
+      });
+
+      // // Schedule notifications for upcoming events
+      // upcomingEvents.forEach((event) => {
+      //   event.events.forEach((e) => {
+      //     const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
+      //     const timeDiff = eventTime - currentTime;
+      //     console.log("event is ",e);
+      //     // Schedule notifications only for events happening in the next hour
+      //     if (timeDiff > 0 && timeDiff <= 60 * 60 * 1000) { // Changed to check for 1 hour (60 minutes * 60 seconds * 1000 milliseconds)
+      //       console.log("notification");
+      //       const notification = new Notification('Event Reminder', {
+      //         body: `Event "${e.title}" is scheduled in 1 hour.`,
+      //       });
+  
+      //       // Automatically close the notification after 10 seconds
+      //       setTimeout(() => {
+      //         console.log("notification came");
+      //         notification.close();
+      //       }, 10000);
+      //     }
+      //   });
+      // });
+
+      // Schedule notifications for upcoming events with a staggered delay
+      upcomingEvents.forEach((event, index) => {
+        event.events.forEach((e, i) => {
           const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
           const timeDiff = eventTime - currentTime;
-          console.log("event is ",e);
-          // Schedule notifications only for events happening in the next hour
-          if (timeDiff > 0 && timeDiff <= 60 * 60 * 1000) { // Changed to check for 1 hour (60 minutes * 60 seconds * 1000 milliseconds)
-            console.log("notification");
-            const notification = new Notification('Event Reminder', {
-              body: `Event "${e.title}" is scheduled in 1 hour.`,
-            });
+          
+          // Stagger the notification timing based on the event index
+          const delay = index * 5000; // 5 seconds delay per event
+          const notificationTime = new Date(currentTime.getTime() + timeDiff + delay);
   
-            // Automatically close the notification after 10 seconds
+          // Schedule notifications only for events happening in the next hour
+          if (timeDiff > 0 && timeDiff <= 60 * 60 * 1000) {
             setTimeout(() => {
-              console.log("notification came");
-              notification.close();
-            }, 10000);
+              console.log("Event ",e.title," is scheduled in some time.",new Date());
+              const notification = new Notification('Event Reminder', {
+                body: `Event "${e.title}" is scheduled in some time.`,
+              });
+  
+              // Automatically close the notification after 10 seconds
+              setTimeout(() => {
+                notification.close();
+              }, 10000);
+            }, delay);
           }
         });
       });
@@ -104,7 +140,7 @@ function Calender() {
     // Cleanup function to clear interval
     const interval = setInterval(() => {
       scheduleNotifications();
-    }, 60 * 1000); // Run every minute
+    }, 15 * 60 * 1000); // Run every 15 minute
   
     return () => clearInterval(interval);
   }, []); // Empty dependency array ensures this effect runs only once on component mount   
