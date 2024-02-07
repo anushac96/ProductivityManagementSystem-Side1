@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { format, parse, isValid } from 'date-fns';
+import { format, parse, isValid, addHours } from 'date-fns';
 
 function Calender() {
 // TODO: when clicked on dates of next/prev month. That date should get selected and show in right
@@ -49,15 +49,118 @@ function Calender() {
   const year = date.getFullYear();
 
   useEffect(() => {
-    console.log("storing value");
+    //console.log("storing value");
     window.sessionStorage.setItem('eventsStored', JSON.stringify(eventsArr));
     window.sessionStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
   }); // Update the effect to run whenever the date changes
+
+  // // useEffect to schedule notifications on component mount
+  // useEffect(() => {
+  //   // Start scheduling minute notifications
+  //   scheduleMinuteNotifications(eventsArr);
+  // }, [eventsArr]);
+
+  useEffect(() => {
+    const scheduleNotifications = () => {
+      const currentTime = new Date();
+      
+      // Filter events that are 1 hour ahead from the current time
+      const upcomingEvents = eventsArr.filter((event) => {
+        return event.events.some((e) => {
+          const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
+          return eventTime > currentTime && eventTime <= addHours(currentTime, 1);
+        });
+      });
+  
+      // Schedule notifications for upcoming events
+      upcomingEvents.forEach((event) => {
+        event.events.forEach((e) => {
+          const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
+          const timeDiff = eventTime - currentTime;
+          console.log("event is ",e);
+          // Schedule notifications only for events happening in the next hour
+          if (timeDiff > 0 && timeDiff <= 60 * 60 * 1000) { // Changed to check for 1 hour (60 minutes * 60 seconds * 1000 milliseconds)
+            console.log("notification");
+            const notification = new Notification('Event Reminder', {
+              body: `Event "${e.title}" is scheduled in 1 hour.`,
+            });
+  
+            // Automatically close the notification after 10 seconds
+            setTimeout(() => {
+              console.log("notification came");
+              notification.close();
+            }, 10000);
+          }
+        });
+      });
+  
+      // Request permission for notifications
+      Notification.requestPermission();
+    };
+  
+    // Schedule notifications on component mount
+    scheduleNotifications();
+  
+    // Cleanup function to clear interval
+    const interval = setInterval(() => {
+      scheduleNotifications();
+    }, 60 * 1000); // Run every minute
+  
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array ensures this effect runs only once on component mount   
+
 
   useEffect(() => {
     initCalendar();
   }, [date, inputDate, eventsArr, events]); // Update the effect to run whenever the date changes
 
+  // function scheduleMinuteNotifications(eventsArr) {
+  //   setInterval(() => {
+  //     // Request permission for notifications
+  //     Notification.requestPermission().then((permission) => {
+  //       if (permission === 'granted') {
+  //         // Check for events within the next minute
+  //         const currentTime = new Date();
+  //         const nextMinute = new Date(currentTime.getTime() + 60 * 1000);
+  
+  //         const upcomingEvents = eventsArr.filter((event) => {
+  //           return event.events.some((e) => {
+  //             const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
+  //             return eventTime > currentTime && eventTime <= nextMinute;
+  //           });
+  //         });
+  
+  //         console.log("Schedule notifications for upcoming events");
+  
+  //         // Schedule notifications for upcoming events
+  //         upcomingEvents.forEach((event) => {
+  //           event.events.forEach((e) => {
+  //             const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
+  //             const timeDiff = eventTime - currentTime;
+  //             console.log("Scheduled");
+  //             // Request permission for notifications
+  //             if (Notification.permission === 'granted') {
+  //               console.log("permission granted");
+  //               // Create a notification
+  //               const notification = new Notification('Event Reminder', {
+  //                 body: `Event "${e.title}" is scheduled within the next minute.`,
+  //               });
+  
+  //               // Automatically close the notification after 10 seconds
+  //               setTimeout(() => {
+  //                 notification.close();
+  //               }, 10000);
+  //             } else {
+  //               console.log("Notification permission not granted");
+  //             }
+  //           });
+  //         });
+  //       } else {
+  //         console.log("Notification permission not granted");
+  //       }
+  //     });
+  //   }, 60 * 1000); // Run every minute
+  // }  
 
   function initCalendar() {
 
@@ -150,13 +253,13 @@ function Calender() {
 
   function goToPreviousMonth() {
     setDate(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
-    console.log("text:", new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
+    //console.log("text:", new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
     setShowingMonth(new Date(date.getFullYear(), date.getMonth() - 1, date.getDate()));
   }
 
   function goToNextMonth() {
     setDate(new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
-    console.log("text:", new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
+    //console.log("text:", new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
     setShowingMonth(new Date(date.getFullYear(), date.getMonth() + 1, date.getDate()));
   }
 
@@ -206,7 +309,7 @@ function Calender() {
       if (isValid(parsedTime)) {
         setEventTimeFrom(format(parsedTime, 'hh:mm a'));
       } else {
-        console.log('Invalid Time From:', inputTime);
+        //console.log('Invalid Time From:', inputTime);
       }
     }
 
@@ -223,7 +326,7 @@ function Calender() {
       if (isValid(parsedTime)) {
         setEventTimeTo(format(parsedTime, 'hh:mm a'));
       } else {
-        console.log('Invalid Time To:', inputTime);
+        //console.log('Invalid Time To:', inputTime);
       }
     }
 
@@ -316,20 +419,20 @@ function Calender() {
     console.log("events are:", eventsArr);
   }
 
-  const handleAddEvent = () => {
-    // Do something with the event details (eventName, eventTimeFrom, eventTimeTo)
-    // For now, let's just log them
-    console.log('Event Name:', eventName);
-    console.log('Event Time From:', eventTimeFrom);
-    console.log('Event Time To:', eventTimeTo);
+  // const handleAddEvent = () => {
+  //   // Do something with the event details (eventName, eventTimeFrom, eventTimeTo)
+  //   // For now, let's just log them
+  //   console.log('Event Name:', eventName);
+  //   console.log('Event Time From:', eventTimeFrom);
+  //   console.log('Event Time To:', eventTimeTo);
 
-    // Close the add-event-wrapper
-    setAddEventActive(false);
-  };
+  //   // Close the add-event-wrapper
+  //   setAddEventActive(false);
+  // };
 
   function updateEvents(selectedDate) {
 
-    console.log("events array in updated method: ", eventsArr);
+    //console.log("events array in updated method: ", eventsArr);
     // Find events for the selected day
     const eventsOnSelectedDay = eventsArr.find(
       (event) =>
@@ -337,21 +440,27 @@ function Calender() {
         event.month === selectedDate.getMonth() + 1 &&
         event.year === selectedDate.getFullYear()
     );
-    console.log("event are before update: ", events);
-    console.log("eventsOnSelectedDay; ", eventsOnSelectedDay);
+    //console.log("event are before update: ", events);
+    //console.log("eventsOnSelectedDay; ", eventsOnSelectedDay);
     // Set events state with the actual events data
     if (eventsOnSelectedDay) {
-      console.log("eventsOnSelectedDay is true");
-      setEvents(eventsOnSelectedDay.events);
+      // Sort the events based on their time
+      const sortedEvents = eventsOnSelectedDay.events.sort((a, b) => {
+        const timeA = parse(a.time.split('-')[0].trim(), 'HH:mm', new Date());
+        const timeB = parse(b.time.split('-')[0].trim(), 'HH:mm', new Date());
+        return timeA - timeB;
+      });
+      
+      setEvents(sortedEvents);
 
     } else {
-      console.log("eventsOnSelectedDay is false");
+      //console.log("eventsOnSelectedDay is false");
       setEvents([]); // No events for the selected day
     }
   }
   // useEffect to perform actions after events is updated
   useEffect(() => {
-    console.log("event are after update: ", events);
+    //console.log("event are after update: ", events);
   }, [events]);
 
 
@@ -409,7 +518,7 @@ function Calender() {
         events: [newEvent],
       };
 
-      console.log("newEntry: ", newEntry);
+      //console.log("newEntry: ", newEntry);
       // Update the state and call the function to update events based on the selected date
       setEventsArr(prevEventsArr => [...prevEventsArr, newEntry]);
     }
@@ -419,8 +528,8 @@ function Calender() {
 
   // useEffect to perform actions after eventsArr is updated
   useEffect(() => {
-    console.log("events array after submit: ", eventsArr);
-    console.log("selectedDayIndex: ", selectedDayIndex);
+    //console.log("events array after submit: ", eventsArr);
+    //console.log("selectedDayIndex: ", selectedDayIndex);
     // Additional actions or side effects can be performed here
     updateEvents(selectedDayIndex); // Call updateEvents after updating state
 
@@ -449,8 +558,8 @@ function Calender() {
 
   // useEffect to perform actions after eventsArr is updated
   useEffect(() => {
-    console.log("events array after submit: ", eventsArr);
-    console.log("selectedDayIndex: ", selectedDayIndex);
+    //console.log("events array after submit: ", eventsArr);
+    //console.log("selectedDayIndex: ", selectedDayIndex);
     // Additional actions or side effects can be performed here
     updateEvents(selectedDayIndex); // Call updateEvents after updating state
 
