@@ -17,6 +17,8 @@ function Timer() {
     const [isPaused, setIsPaused] = useState(true);
     const [mode, setMode] = useState('work'); // can be work/break/null
     const [secondsLeft, setSecondsLeft] = useState(0);
+    const [selectedTag, setSelectedTag] = useState(getStoredSelectedTag() || '');
+
 
     const secondsLeftRef = useRef(secondsLeft);
     const isPausedRef = useRef(isPaused);
@@ -29,7 +31,7 @@ function Timer() {
     const [lastUpdatedDate, setLastUpdatedDate] = useState(getStoredLastUpdatedDate() || new Date().toLocaleDateString());
 
     const [tags, setTags] = useState(getStoredTags());
-    const [selectedTag, setSelectedTag] = useState('');
+    //const [selectedTag, setSelectedTag] = useState('');
     const [totalTimeWorked, setTotalTimeWorked] = useState({});
     const [newTag, setNewTag] = useState('');
 
@@ -128,6 +130,11 @@ function Timer() {
         localStorage.setItem('lastUpdatedDate', lastUpdatedDate);
     }, [totalHoursWorked, lastUpdatedDate]);
 
+    // Store selected tag in local storage
+    useEffect(() => {
+        localStorage.setItem('selectedTag', selectedTag);
+    }, [selectedTag]);
+
     // Load tags from local storage on component mount
     useEffect(() => {
         const storedTags = JSON.parse(localStorage.getItem('tags')) || [];
@@ -176,7 +183,7 @@ function Timer() {
         
         const timerId = setInterval(() => {
             if (!isPaused && mode === 'work' && selectedTag) {
-                console.log("selected tag is: ", selectedTag);
+                //console.log("selected tag is: ", selectedTag);
                 // Only update if a tag is selected
                 setTotalTimeWorked(prev => {
                     console.log('current value of', selectedTag, ':', prev[selectedTag]); // Log the previous value
@@ -185,11 +192,11 @@ function Timer() {
                     return { ...prev, [selectedTag]: updatedValue };
                 });
             }
-            console.log("totalTimeWorked: ", totalTimeWorked);
+            //console.log("totalTimeWorked: ", totalTimeWorked);
             if (secondsLeftRef.current === 0 && mode === 'work') {
                 // Store totalTimeWorked in local storage when a work cycle is completed
                 if (selectedTag) {
-                    console.log("storing");
+                    //console.log("storing");
                     localStorage.setItem('totalTimeWorked', JSON.stringify({ ...totalTimeWorked, [selectedTag]: (updatedValue+1) }));
                 }
             }
@@ -216,6 +223,10 @@ function Timer() {
 
     function getStoredTags() {
         return JSON.parse(localStorage.getItem('tags')) || [];
+    }
+
+    function getStoredSelectedTag() {
+        return localStorage.getItem('selectedTag') || '';
     }
 
     function switchMode() {
