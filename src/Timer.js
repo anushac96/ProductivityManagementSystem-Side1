@@ -165,29 +165,40 @@ function Timer() {
     // Update the total time worked for the selected tag during work sessions
     useEffect(() => {
         let updatedValue = 0;
+    
+        // Fetch previous value from localStorage and convert it from minutes to seconds
+        //const storedTotalTimeWorked = JSON.parse(localStorage.getItem('totalTimeWorked')) || {};
+        //const storedValueInSeconds = (storedTotalTimeWorked[selectedTag] || 0) * 60;
+        //console.log("storedTotalTimeWorked: ", storedTotalTimeWorked,"     storedValueInSeconds:", storedValueInSeconds);
+        
+        // Start counting from the stored value in seconds
+        //updatedValue = storedValueInSeconds;
+        
         const timerId = setInterval(() => {
             if (!isPaused && mode === 'work' && selectedTag) {
                 console.log("selected tag is: ", selectedTag);
                 // Only update if a tag is selected
                 setTotalTimeWorked(prev => {
-                    console.log('Previous value of', selectedTag, ':', prev[selectedTag]); // Log the previous value
+                    console.log('current value of', selectedTag, ':', prev[selectedTag]); // Log the previous value
                     updatedValue = (prev[selectedTag] || 0) + 1;
-                    console.log("totalTimeWorked: ", totalTimeWorked);
+                    console.log("updatedValue: ",updatedValue);
                     return { ...prev, [selectedTag]: updatedValue };
                 });
-                console.log("settingsInfo.workMinutes: ", settingsInfo.workMinutes);
             }
+            console.log("totalTimeWorked: ", totalTimeWorked);
             if (secondsLeftRef.current === 0 && mode === 'work') {
                 // Store totalTimeWorked in local storage when a work cycle is completed
                 if (selectedTag) {
-                    localStorage.setItem('totalTimeWorked', JSON.stringify({ ...totalTimeWorked, [selectedTag]: (updatedValue+1) / 60 }));
+                    console.log("storing");
+                    localStorage.setItem('totalTimeWorked', JSON.stringify({ ...totalTimeWorked, [selectedTag]: (updatedValue+1) }));
                 }
             }
+            
         }, 1000);
-    
+
         // Execute the storage function on component unmount or dependency change
         return () => clearInterval(timerId);
-    }, [isPaused, mode, selectedTag, settingsInfo.workMinutes]);
+    }, [isPaused, mode, selectedTag, settingsInfo.workMinutes]);    
     
 
     // Handle tag selection
@@ -255,8 +266,11 @@ function Timer() {
                     <SettingButton onClick={() => settingsInfo.setShowSettings(true)} />
                 </div>
             </div>
+            {selectedTag && totalTimeWorked[selectedTag] && (
+                <p>Minutes Worked for {selectedTag}: {totalTimeWorked[selectedTag]/60}</p>
+            )}
             <div style={{ marginTop: '20px' }}>
-                <p>Total Minutes Worked Today: {totalHoursWorked}</p>
+                <p>Minutes Worked Today: {totalHoursWorked}</p>
             </div>
         </div>
     );
