@@ -18,7 +18,7 @@ export const logout = () => {
 }
 
 export const setClientToken = (token) => {
-  console.log("inside setClientToken:",token);
+  //console.log("inside setClientToken:",token);
   
   // apiClient.interceptors.request.use(async function (config) {
   //   config.headers.Authorization = "Bearer " + token;

@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import apiClient, { setClientToken } from './spotify';
+import axios from 'axios';
 
 function MediaPlayer() {
     const [state, setState] = useState({
@@ -12,21 +14,21 @@ function MediaPlayer() {
                 img: '/imgs/heroes.jpeg',
                 audio: '/songs/Janji - Heroes Tonight (feat. Johnning) [NCS Release].mp3',
                 duration: '3:28',
-            },
-            {
-                name: 'DEAF KEY-Invincible',
-                author: 'NSC',
-                img: '/imgs/Invinciple.jpeg',
-                audio: '/songs/DEAF KEV - Invincible [NCS Release].mp3',
-                duration: '4:33',
-            },
-            {
-                name: 'Heaven',
-                author: 'NSC',
-                img: '/imgs/Invinciple.jpeg',
-                audio: '/songs/Different Heaven & EH!DE - My Heart [NCS Release].mp3',
-                duration: '3:28',
-            },
+            }//,
+            // {
+            //     name: 'DEAF KEY-Invincible',
+            //     author: 'NSC',
+            //     img: '/imgs/Invinciple.jpeg',
+            //     audio: '/songs/DEAF KEV - Invincible [NCS Release].mp3',
+            //     duration: '4:33',
+            // },
+            // {
+            //     name: 'Heaven',
+            //     author: 'NSC',
+            //     img: '/imgs/Invinciple.jpeg',
+            //     audio: '/songs/Different Heaven & EH!DE - My Heart [NCS Release].mp3',
+            //     duration: '3:28',
+            // },
         ],
     });
 
@@ -34,6 +36,82 @@ function MediaPlayer() {
     const timelineRef = useRef(null);
     const playheadRef = useRef(null);
     const hoverPlayheadRef = useRef(null);
+    let accessToken;
+    const [data, setData] = useState({});
+
+    const PLAYLISTS_ENDPOINT = "https://api.spotify.com/v1/me/playlists";
+
+    useEffect(() => {
+        // Fetch Spotify tracks when the component mounts
+        const fetchSpotifyTracks = async () => {
+            try {
+                // Get the hash fragment from the URL
+                const hash = window.location.hash;
+                //console.log("hash: ",hash);
+                if (hash) {
+
+                    accessToken = (localStorage.getItem("token"));
+        
+                    if (accessToken) {
+                        //console.log('Access Token:', accessToken);
+                       // console.log("hash: ",hash);
+                        //console.log("calling tracks");
+                        handleGetPlaylists();
+                        // Fetch user's saved tracks
+                        // const response = await apiClient.get('/me/tracks');
+                        // console.log("response: ",response);
+                        // // Update the musicList state with fetched tracks
+                        // setState(prevState => ({
+                        //     ...prevState,
+                        //     musicList: response.data.items,
+                        // }));
+                    } else {
+                        //console.log("hash: ",hash);
+                        // Parse the hash fragment to extract parameters
+                        const params = new URLSearchParams(hash.substring(1));
+                        //console.log("prams: ",params);
+                        // Get the value of the access_token parameter
+                        accessToken = (params.get('access_token'));
+                        //console.log("access token: ",accessToken)
+                         // Clear the hash fragment from the URL
+                         window.location.hash = '';
+
+                         // Store the access token in local storage
+                        localStorage.setItem('token', accessToken);
+                    }
+                    // Set the access token for the API client
+                    setClientToken(accessToken);
+                } else {
+                    console.log('Hash fragment not found in URL');
+                }
+            } catch (error) {
+                console.log('Error fetching Spotify tracks:', error);
+            }
+        };        
+        fetchSpotifyTracks();
+    }, []);
+
+    useEffect(() => {
+        const accessToken = localStorage.getItem('token');
+        //console.log("setClientToken");
+        setClientToken(accessToken);
+    }, [state]);
+
+    const handleGetPlaylists = () => {
+        axios
+          .get(PLAYLISTS_ENDPOINT, {
+            headers: {
+              Authorization: "Bearer " + accessToken,
+            },
+          })
+          .then((response) => {
+            setData(response.data);
+            console.log("Playlists:", response.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      };
 
     const timeUpdate = () => {
         const duration = playerRef.current.duration;
