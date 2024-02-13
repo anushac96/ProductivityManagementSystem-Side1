@@ -56,6 +56,7 @@ function App() {
   };
 
   return (
+    // <Login onLogin={handleLogin} handleGetPlaylists={handleGetPlaylists} />
     <><main>
       <SettingsContext.Provider value={{
         showSettings,
@@ -69,8 +70,8 @@ function App() {
       </SettingsContext.Provider>
     </main>
       <Calender />
-      <MediaPlayer handleGetPlaylists={handleGetPlaylists} playlists={playlists} />
-      <Login onLogin={handleLogin} handleGetPlaylists={handleGetPlaylists} />
+      <MediaPlayer handleGetPlaylists={handleGetPlaylists} playlists={playlists}/>
+      <Login onLogin={handleLogin} handleGetPlaylists={handleGetPlaylists} setPlaylists={setPlaylists}/>
     </>
   );
 }
