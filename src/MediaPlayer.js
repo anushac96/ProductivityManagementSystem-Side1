@@ -360,7 +360,7 @@ function MediaPlayer(props) {
                                     <span className="track-name">{track.name}</span>
                                     <span className="track-author">{track.author}</span>
                                 </div>
-                                <span className="track-duration">{track.duration}</span>
+                                <span className="track-duration">{formatTime(track.duration / 1000)}</span>
                             </div>
                         ))
                     ) : (
