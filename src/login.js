@@ -14,6 +14,9 @@ export default function Login({ onLogin, handleGetPlaylists }) {
     logout();
     onLogin(false);
   };
+  const handleGetPlaylistsClick = () => {
+    handleGetPlaylists(); // Call handleGetPlaylists passed from App.js
+  };
 
   return (
     <div>
@@ -23,7 +26,7 @@ export default function Login({ onLogin, handleGetPlaylists }) {
         </a>
       ) : (
         <div>
-          <button className="playList-btn" onClick={handleGetPlaylists}>
+          <button className="playList-btn" onClick={handleGetPlaylistsClick}>
             Get Playlists
           </button>
           <button className="login-btn" onClick={handleLogout}>

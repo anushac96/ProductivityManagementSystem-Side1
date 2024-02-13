@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import apiClient, { setClientToken } from './spotify';
 import axios from 'axios';
 
-function MediaPlayer() {
+function MediaPlayer(props) {
     const [state, setState] = useState({
         index: 0,
         pause: false, // Assuming that by default, the audio should be paused
         currentTime: '0:00',
+        // Initialize musicList as an empty array
         musicList: [
             {
                 name: 'Heroes Tonight',
@@ -14,30 +15,34 @@ function MediaPlayer() {
                 img: '/imgs/heroes.jpeg',
                 audio: '/songs/Janji - Heroes Tonight (feat. Johnning) [NCS Release].mp3',
                 duration: '3:28',
-            }//,
-            // {
-            //     name: 'DEAF KEY-Invincible',
-            //     author: 'NSC',
-            //     img: '/imgs/Invinciple.jpeg',
-            //     audio: '/songs/DEAF KEV - Invincible [NCS Release].mp3',
-            //     duration: '4:33',
-            // },
-            // {
-            //     name: 'Heaven',
-            //     author: 'NSC',
-            //     img: '/imgs/Invinciple.jpeg',
-            //     audio: '/songs/Different Heaven & EH!DE - My Heart [NCS Release].mp3',
-            //     duration: '3:28',
-            // },
+            },
+            {
+                name: 'DEAF KEY-Invincible',
+                author: 'NSC',
+                img: '/imgs/Invinciple.jpeg',
+                audio: '/songs/DEAF KEV - Invincible [NCS Release].mp3',
+                duration: '4:33',
+            },
+            {
+                name: 'Heaven',
+                author: 'NSC',
+                img: '/imgs/Invinciple.jpeg',
+                audio: '/songs/Different Heaven & EH!DE - My Heart [NCS Release].mp3',
+                duration: '3:28',
+            },
         ],
     });
+
+    const [showPlayList, setShowPlayList] = useState(false); // Track if user clicks on "get playlist"
 
     const playerRef = useRef(null);
     const timelineRef = useRef(null);
     const playheadRef = useRef(null);
     const hoverPlayheadRef = useRef(null);
     let accessToken;
-    const [data, setData] = useState({});
+    const { playlists } = props; // Accessing playlists prop
+    //const [data, setData] = useState({});
+    //const [playlists, setPlaylists] = useState([]);
 
     const PLAYLISTS_ENDPOINT = "https://api.spotify.com/v1/me/playlists";
 
@@ -51,43 +56,91 @@ function MediaPlayer() {
                 if (hash) {
 
                     accessToken = (localStorage.getItem("token"));
-        
-                    if (accessToken) {
-                        //console.log('Access Token:', accessToken);
-                       // console.log("hash: ",hash);
-                        //console.log("calling tracks");
-                        handleGetPlaylists();
-                        // Fetch user's saved tracks
-                        // const response = await apiClient.get('/me/tracks');
-                        // console.log("response: ",response);
-                        // // Update the musicList state with fetched tracks
-                        // setState(prevState => ({
-                        //     ...prevState,
-                        //     musicList: response.data.items,
-                        // }));
-                    } else {
-                        //console.log("hash: ",hash);
-                        // Parse the hash fragment to extract parameters
+                    if (!accessToken) {
                         const params = new URLSearchParams(hash.substring(1));
-                        //console.log("prams: ",params);
-                        // Get the value of the access_token parameter
-                        accessToken = (params.get('access_token'));
-                        //console.log("access token: ",accessToken)
-                         // Clear the hash fragment from the URL
-                         window.location.hash = '';
-
-                         // Store the access token in local storage
+                        accessToken = params.get('access_token');
+                        window.location.hash = '';
                         localStorage.setItem('token', accessToken);
+                        // Set default music list if user is not logged in
+            setState(prevState => ({
+                ...prevState,
+                musicList: [
+                    {
+                        name: 'Heroes Tonight',
+                        author: 'NSC',
+                        img: '/imgs/heroes.jpeg',
+                        audio: '/songs/Janji - Heroes Tonight (feat. Johnning) [NCS Release].mp3',
+                        duration: '3:28',
+                    },
+                    {
+                        name: 'DEAF KEY-Invincible',
+                        author: 'NSC',
+                        img: '/imgs/Invinciple.jpeg',
+                        audio: '/songs/DEAF KEV - Invincible [NCS Release].mp3',
+                        duration: '4:33',
+                    },
+                    {
+                        name: 'Heaven',
+                        author: 'NSC',
+                        img: '/imgs/Invinciple.jpeg',
+                        audio: '/songs/Different Heaven & EH!DE - My Heart [NCS Release].mp3',
+                        duration: '3:28',
+                    },
+                ]
+            }));
                     }
-                    // Set the access token for the API client
                     setClientToken(accessToken);
+
+                    // Update the state with the fetched tracks from local storage, if available
+                    const storedTracks = localStorage.getItem('playlists');
+                    const tracks = storedTracks ? JSON.parse(storedTracks) : state.musicList;
+                    setState(prevState => ({
+                        ...prevState,
+                        musicList: tracks,
+                    }));
+//                     if (accessToken) {
+//                         //console.log('Access Token:', accessToken);
+//                         // console.log("hash: ",hash);
+//                         //console.log("calling tracks");
+//                         //handleGetPlaylists();
+//                         // Fetch user's saved tracks
+//                         // const response = await apiClient.get('/me/tracks');
+//                         // console.log("response: ",response);
+//                         // // Update the musicList state with fetched tracks
+//                         // setState(prevState => ({
+//                         //     ...prevState,
+//                         //     musicList: response.data.items,
+//                         // }));
+//                     } else {
+//                         //console.log("hash: ",hash);
+//                         // Parse the hash fragment to extract parameters
+//                         const params = new URLSearchParams(hash.substring(1));
+//                         //console.log("prams: ",params);
+//                         // Get the value of the access_token parameter
+//                         accessToken = (params.get('access_token'));
+//                         //console.log("access token: ",accessToken)
+//                         // Clear the hash fragment from the URL
+//                         window.location.hash = '';
+
+//                         // Store the access token in local storage
+//                         localStorage.setItem('token', accessToken);
+//                     }
+//                     // Set the access token for the API client
+//                     setClientToken(accessToken);
+//                     // Update the state with the fetched tracks from local storage, if available
+// const storedTracks = localStorage.getItem('playlists');
+// const tracks = storedTracks ? JSON.parse(storedTracks) : state.musicList;
+// setState(prevState => ({
+//     ...prevState,
+//     musicList: tracks,
+// }));
                 } else {
                     console.log('Hash fragment not found in URL');
                 }
             } catch (error) {
                 console.log('Error fetching Spotify tracks:', error);
             }
-        };        
+        };
         fetchSpotifyTracks();
     }, []);
 
@@ -97,21 +150,23 @@ function MediaPlayer() {
         setClientToken(accessToken);
     }, [state]);
 
-    const handleGetPlaylists = () => {
-        axios
-          .get(PLAYLISTS_ENDPOINT, {
-            headers: {
-              Authorization: "Bearer " + accessToken,
-            },
-          })
-          .then((response) => {
-            setData(response.data);
-            console.log("Playlists:", response.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      };
+    // const handleGetPlaylists = () => {
+    //     axios
+    //       .get(PLAYLISTS_ENDPOINT, {
+    //         headers: {
+    //           Authorization: "Bearer " + accessToken,
+    //         },
+    //       })
+    //       .then((response) => {
+    //         setData(response.data);
+    //         console.log("Playlists:", response.data);
+    //         const playlists = response.data.items.map(item => item.name);
+    //         setPlaylists(playlists);
+    //       })
+    //       .catch((error) => {
+    //         console.log(error);
+    //       });
+    //   };
 
     const timeUpdate = () => {
         const duration = playerRef.current.duration;
@@ -249,6 +304,7 @@ function MediaPlayer() {
 
     const { musicList, index, currentTime, pause } = state;
     const currentSong = musicList[index];
+    console.log("musicList:", musicList);
 
     return (
         <body className="mp">
@@ -292,21 +348,38 @@ function MediaPlayer() {
                     </>
                 )}
                 <div className="play-list">
-                    {musicList.map((music, key = 0) => (
-                        <div
-                            key={key}
-                            onClick={() => clickAudio(key)}
-                            className={`track ${index === key && !pause ? 'current-audio' : ''}${index === key && pause ? 'play-now' : ''
-                                }`}
-                        >
-                            <img className="track-img" src={music.img} alt="Track" />
-                            <div className="track-discr">
-                                <span className="track-name">{music.name}</span>
-                                <span className="track-author">{music.author}</span>
+                    {playlists.length > 0 ? (
+                        playlists.map((track, key) => (
+                            <div
+                                key={key}
+                                onClick={() => clickAudio(key)}
+                                className={`track ${index === key && !pause ? 'current-audio' : ''}${index === key && pause ? 'play-now' : ''}`}
+                            >
+                                <img className="track-img" src={track.img} alt="Track" />
+                                <div className="track-discr">
+                                    <span className="track-name">{track.name}</span>
+                                    <span className="track-author">{track.author}</span>
+                                </div>
+                                <span className="track-duration">{track.duration}</span>
                             </div>
-                            <span className="track-duration">{index === key ? currentTime : music.duration}</span>
-                        </div>
-                    ))}
+                        ))
+                    ) : (
+                        musicList.map((music, key = 0) => (
+                            <div
+                                key={key}
+                                onClick={() => clickAudio(key)}
+                                className={`track ${index === key && !pause ? 'current-audio' : ''}${index === key && pause ? 'play-now' : ''
+                                    }`}
+                            >
+                                <img className="track-img" src={music.img} alt="Track" />
+                                <div className="track-discr">
+                                    <span className="track-name">{music.name}</span>
+                                    <span className="track-author">{music.author}</span>
+                                </div>
+                                <span className="track-duration">{index === key ? currentTime : music.duration}</span>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </body>

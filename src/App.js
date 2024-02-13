@@ -15,22 +15,40 @@ function App() {
   const [workMinutes, setWorkMinutes] = useState(25);
   const [breakMinutes, setBreakMinutes] = useState(5);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const PLAYLISTS_ENDPOINT = "https://api.spotify.com/v1/me/playlists";
+  //const PLAYLISTS_ENDPOINT = "https://api.spotify.com/v1/me/playlists";
   const [data, setData] = useState({});
+  const [playlists, setPlaylists] = useState([]);
   const handleLogin = (loggedIn) => {
     setIsAuthenticated(loggedIn);
   }
 
   const handleGetPlaylists = () => {
+    const playlistId = "6rJxt5sueWxOrKoD5QcGNW"; // Playlist ID for the "Meditation" playlist
+    const PLAYLISTS_ENDPOINT = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+    const accessToken = localStorage.getItem('token');
     axios
       .get(PLAYLISTS_ENDPOINT, {
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          Authorization: "Bearer " + accessToken,
         },
       })
       .then((response) => {
-        setData(response.data);
-        console.log("Playlists from App.js:", response.data);
+        //const playlists = response.data.items.map(item => item.name);
+        //console.log(response.data)
+        //console.log("playlist from app.js ",playlists)
+        //setPlaylists(playlists);
+        // Extract the tracks from the response data
+        // Extract the tracks from the response data
+        const tracks = response.data.items.map(item => ({
+          name: item.track.name,
+          author: item.track.artists.map(artist => artist.name).join(', '), // If there are multiple artists
+          duration: item.track.duration_ms,
+        }));
+        console.log(tracks);
+        // Update the state with the fetched tracks
+        setPlaylists(tracks);
+        // Save playlists in local storage to make them persistent
+        localStorage.setItem('playlists', tracks);
       })
       .catch((error) => {
         console.log(error);
@@ -51,8 +69,7 @@ function App() {
       </SettingsContext.Provider>
     </main>
       <Calender />
-      <MediaPlayer />
-      <MediaPlayer handleGetPlaylists={handleGetPlaylists}  />
+      <MediaPlayer handleGetPlaylists={handleGetPlaylists} playlists={playlists} />
       <Login onLogin={handleLogin} handleGetPlaylists={handleGetPlaylists} />
     </>
   );
