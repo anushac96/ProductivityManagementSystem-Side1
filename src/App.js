@@ -18,9 +18,16 @@ function App() {
   //const PLAYLISTS_ENDPOINT = "https://api.spotify.com/v1/me/playlists";
   const [data, setData] = useState({});
   const [playlists, setPlaylists] = useState([]);
+  
   const handleLogin = (loggedIn) => {
     setIsAuthenticated(loggedIn);
   }
+  function millisecondsToMinutesAndSeconds(durationInMs) {
+    const totalSeconds = Math.floor(durationInMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
 
   const handleGetPlaylists = () => {
     const playlistId = "6rJxt5sueWxOrKoD5QcGNW"; // Playlist ID for the "Meditation" playlist
@@ -33,18 +40,17 @@ function App() {
         },
       })
       .then((response) => {
-        //const playlists = response.data.items.map(item => item.name);
-        //console.log(response.data)
-        //console.log("playlist from app.js ",playlists)
-        //setPlaylists(playlists);
-        // Extract the tracks from the response data
+        
+        console.log(response.data)
         // Extract the tracks from the response data
         const tracks = response.data.items.map(item => ({
           name: item.track.name,
-          author: item.track.artists.map(artist => artist.name).join(', '), // If there are multiple artists
-          duration: item.track.duration_ms,
-        }));
-        console.log(tracks);
+          author: item.track.artists.map(artist => artist.name).join(', '),
+          duration: millisecondsToMinutesAndSeconds(item.track.duration_ms),
+          img: item.track.album.images[0].url,
+          url:item.track.external_urls.spotify,
+      }));
+        console.log("tracks:",tracks);
         // Update the state with the fetched tracks
         setPlaylists(tracks);
         // Save playlists in local storage to make them persistent

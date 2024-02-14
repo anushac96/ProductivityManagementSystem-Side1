@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 :root {
   --red: #f54e4e;
   --green: #4aec8c;
@@ -608,6 +609,7 @@ calendar {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 400px;
 }
 
 .card {
@@ -826,3 +828,146 @@ calendar {
   flex: 1;
   /* Added to allow flexible sizing for track information */
 }
+/* .login-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-direction: column;
+} */
+
+.logo {
+  width: 30%;
+}
+
+.login-btn {
+  width: 100px;
+  padding: 15px 0px;
+  text-align: center;
+  background-color: #fefefe;
+  border-radius: 50px;
+  color: #1f1f1f;
+  font-weight: 600;
+  position: fixed;
+  bottom: 20px; /* Adjust the distance from the bottom as needed */
+  right: 20px; /* Adjust the distance from the right as needed */
+}
+
+.playList-btn {
+  width: 150px;
+  padding: 15px 0px;
+  text-align: center;
+  background-color: #fefefe;
+  border-radius: 50px;
+  color: #1f1f1f;
+  font-weight: 600;
+  position: fixed;
+  bottom: 80px; /* Adjust the distance from the bottom as needed */
+  right: 20px; /* Adjust the distance from the right as needed */
+}
+
+a {
+  text-decoration: none;
+}
+
+
+/* .AppRegister{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; 
+  padding: 1rem 0.5rem;
+}
+
+section {
+  width: 100%;
+  max-width: 420px;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  background-color: rgba(0,0,0,0.4);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  flex-grow: 1;
+  padding-bottom: 1rem;
+}
+
+a, a:visited {
+  color: #fff;
+}
+
+input[type="text"],
+input[type="password"],
+button,
+textarea {
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px;
+  padding: 0.25rem;
+  border-radius: 0.5rem;
+}
+
+label,
+button {
+  margin-top: 1rem;
+}
+
+form .toRegister {
+  padding: 0.5rem;
+  width: fit-content;
+  background-color: rgba(39, 70, 132, 0.7);
+}
+
+.instructions {
+  font-size: 0.75rem;
+  border-radius: 0.5rem;
+  background: #000;
+  color: #fff;
+  padding: 0.25rem;
+  position: relative;
+  bottom: -10px;
+}
+
+.instructions > svg {
+  margin-right: 0.25rem;
+}
+
+.offscreen {
+  position: absolute;
+  left: -9999px;
+}
+
+.hide {
+  display: none;
+}
+
+.valid {
+  color: limegreen;
+  margin-left: 0.25rem;
+}
+
+.invalid {
+  color: red;
+  margin-left: 0.25rem;
+}
+
+.errmsg {
+  background-color: lightpink;
+  color: firebrick;
+  font-weight: bold;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.line {
+  display: inline-block;
+}
+ */

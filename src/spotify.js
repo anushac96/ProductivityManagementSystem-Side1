@@ -15,6 +15,7 @@ const apiClient = axios.create({
 
 export const logout = () => {
   window.localStorage.removeItem("token")
+  window.localStorage.removeItem("playlists")
 }
 
 export const setClientToken = (token) => {

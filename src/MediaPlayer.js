@@ -33,35 +33,25 @@ function MediaPlayer(props) {
         ],
     });
 
-    const [showPlayList, setShowPlayList] = useState(false); // Track if user clicks on "get playlist"
-
     const playerRef = useRef(null);
     const timelineRef = useRef(null);
     const playheadRef = useRef(null);
     const hoverPlayheadRef = useRef(null);
     let accessToken;
     const { playlists } = props; // Accessing playlists prop
-    //const [data, setData] = useState({});
-    //const [playlists, setPlaylists] = useState([]);
-
-    const PLAYLISTS_ENDPOINT = "https://api.spotify.com/v1/me/playlists";
+    const { musicList, index, currentTime, pause } = state;
+    // Inside the component function
+    const [fetchingPlaylist, setFetchingPlaylist] = useState(false);
 
     useEffect(() => {
-        // Fetch Spotify tracks when the component mounts
-        const fetchSpotifyTracks = async () => {
-            try {
-                // Get the hash fragment from the URL
-                const hash = window.location.hash;
-                //console.log("hash: ",hash);
-                if (hash) {
-
-                    accessToken = (localStorage.getItem("token"));
-                    if (!accessToken) {
-                        const params = new URLSearchParams(hash.substring(1));
-                        accessToken = params.get('access_token');
-                        window.location.hash = '';
-                        localStorage.setItem('token', accessToken);
-                        // Set default music list if user is not logged in
+        if (fetchingPlaylist) {
+            // Update musicList state with the playlists prop when fetchingPlaylist is true
+            setState(prevState => ({
+                ...prevState,
+                musicList: props.playlists,
+            }));
+        } else {
+            // Revert back to the hardcoded musicList when fetchingPlaylist is false
             setState(prevState => ({
                 ...prevState,
                 musicList: [
@@ -88,6 +78,52 @@ function MediaPlayer(props) {
                     },
                 ]
             }));
+        }
+    }, [fetchingPlaylist, props.playlists]);
+
+
+    useEffect(() => {
+        // Fetch Spotify tracks when the component mounts
+        const fetchSpotifyTracks = async () => {
+            try {
+                // Get the hash fragment from the URL
+                const hash = window.location.hash;
+                //console.log("hash: ",hash);
+                if (hash) {
+
+                    accessToken = (localStorage.getItem("token"));
+                    if (!accessToken) {
+                        const params = new URLSearchParams(hash.substring(1));
+                        accessToken = params.get('access_token');
+                        window.location.hash = '';
+                        localStorage.setItem('token', accessToken);
+                        // Set default music list if user is not logged in
+                        setState(prevState => ({
+                            ...prevState,
+                            musicList: [
+                                {
+                                    name: 'Heroes Tonight',
+                                    author: 'NSC',
+                                    img: '/imgs/heroes.jpeg',
+                                    audio: '/songs/Janji - Heroes Tonight (feat. Johnning) [NCS Release].mp3',
+                                    duration: '3:28',
+                                },
+                                {
+                                    name: 'DEAF KEY-Invincible',
+                                    author: 'NSC',
+                                    img: '/imgs/Invinciple.jpeg',
+                                    audio: '/songs/DEAF KEV - Invincible [NCS Release].mp3',
+                                    duration: '4:33',
+                                },
+                                {
+                                    name: 'Heaven',
+                                    author: 'NSC',
+                                    img: '/imgs/Invinciple.jpeg',
+                                    audio: '/songs/Different Heaven & EH!DE - My Heart [NCS Release].mp3',
+                                    duration: '3:28',
+                                },
+                            ]
+                        }));
                     }
                     setClientToken(accessToken);
 
@@ -98,42 +134,6 @@ function MediaPlayer(props) {
                         ...prevState,
                         musicList: tracks,
                     }));
-//                     if (accessToken) {
-//                         //console.log('Access Token:', accessToken);
-//                         // console.log("hash: ",hash);
-//                         //console.log("calling tracks");
-//                         //handleGetPlaylists();
-//                         // Fetch user's saved tracks
-//                         // const response = await apiClient.get('/me/tracks');
-//                         // console.log("response: ",response);
-//                         // // Update the musicList state with fetched tracks
-//                         // setState(prevState => ({
-//                         //     ...prevState,
-//                         //     musicList: response.data.items,
-//                         // }));
-//                     } else {
-//                         //console.log("hash: ",hash);
-//                         // Parse the hash fragment to extract parameters
-//                         const params = new URLSearchParams(hash.substring(1));
-//                         //console.log("prams: ",params);
-//                         // Get the value of the access_token parameter
-//                         accessToken = (params.get('access_token'));
-//                         //console.log("access token: ",accessToken)
-//                         // Clear the hash fragment from the URL
-//                         window.location.hash = '';
-
-//                         // Store the access token in local storage
-//                         localStorage.setItem('token', accessToken);
-//                     }
-//                     // Set the access token for the API client
-//                     setClientToken(accessToken);
-//                     // Update the state with the fetched tracks from local storage, if available
-// const storedTracks = localStorage.getItem('playlists');
-// const tracks = storedTracks ? JSON.parse(storedTracks) : state.musicList;
-// setState(prevState => ({
-//     ...prevState,
-//     musicList: tracks,
-// }));
                 } else {
                     console.log('Hash fragment not found in URL');
                 }
@@ -149,25 +149,15 @@ function MediaPlayer(props) {
         //console.log("setClientToken");
         setClientToken(accessToken);
     }, [state]);
+    const [currentPlaylist, setCurrentPlaylist] = useState(props.playlists && props.playlists.length > 0 ? props.playlists : musicList);
+    // Separate state for current playlist
 
-    // const handleGetPlaylists = () => {
-    //     axios
-    //       .get(PLAYLISTS_ENDPOINT, {
-    //         headers: {
-    //           Authorization: "Bearer " + accessToken,
-    //         },
-    //       })
-    //       .then((response) => {
-    //         setData(response.data);
-    //         console.log("Playlists:", response.data);
-    //         const playlists = response.data.items.map(item => item.name);
-    //         setPlaylists(playlists);
-    //       })
-    //       .catch((error) => {
-    //         console.log(error);
-    //       });
-    //   };
-
+    useEffect(() => {
+        if (props.playlists && props.playlists.length > 0) {
+            // Update currentPlaylist state when playlists prop is received
+            setCurrentPlaylist(props.playlists);
+        }
+    }, [props.playlists]);
     const timeUpdate = () => {
         const duration = playerRef.current.duration;
         const timeLineWidth = timelineRef.current.offsetWidth - playheadRef.current.offsetWidth;
@@ -179,15 +169,15 @@ function MediaPlayer(props) {
     };
 
     const nextSong = () => {
-        const { musicList, index, pause } = state;
+        const { musicList, playlists, index, pause } = state;
+        const nextIndex = (index + 1) % (playlists?.length > 0 ? playlists.length : musicList.length);
 
-        setState((prev) => ({ ...prev, index: (index + 1) % musicList.length }));
+        setState((prev) => ({ ...prev, index: nextIndex }));
 
         updatePlayer();
         if (pause) {
             playerRef.current.play();
         }
-
     };
 
     const resetTimeLine = () => {
@@ -232,8 +222,8 @@ function MediaPlayer(props) {
     };
 
     const updatePlayer = () => {
-        const { musicList, index } = state;
-        const currentSong = musicList[index];
+        const { musicList, playlists, index } = state;
+        const currentSong = (playlists?.length > 0 ? playlists : musicList)[index];
         // Check if playerRef.current exists before calling methods on it
         if (playerRef.current) {
             playerRef.current.load();
@@ -241,11 +231,12 @@ function MediaPlayer(props) {
     };
 
     const prevSong = () => {
-        const { musicList, index, pause } = state;
+        const { musicList, playlists, index, pause } = state;
+        const prevIndex = (index + (playlists?.length > 0 ? playlists : musicList).length - 1) % (playlists.length > 0 ? playlists : musicList).length;
 
         setState((prev) => ({
             ...prev,
-            index: (index + musicList.length - 1) % musicList.length,
+            index: prevIndex,
         }));
 
         updatePlayer();
@@ -256,19 +247,58 @@ function MediaPlayer(props) {
 
     const playOrPause = () => {
         const { musicList, index, pause } = state;
-        const currentSong = musicList[index];
-        const audio = new Audio(currentSong.audio);
+    const currentSong = musicList[index];
+    const audio = new Audio(currentSong.audio);
 
-        if (state.pause) {
-            playerRef.current.pause();
-        } else {
-            playerRef.current.play();
-        }
+    if (state.pause) {
+      playerRef.current.pause();
+    } else {
+      playerRef.current.play();
+    }
 
-        setState((prev) => ({ ...prev, pause: !pause }));
+    setState((prev) => ({ ...prev, pause: !pause }));
+    //     const { index, pause } = state;
+    //     const currentSong = currentPlaylist[index];
+    //     if (!currentSong) {
+    //         console.error("Current song is undefined or null:", currentSong);
+    //         return;
+    //     }
+    //     console.log("Current song:", currentSong);
+
+    //     console.log("Audio URL:", currentSong.url);
+    //     if (playlists?.length > 0) {
+    //         axios
+    //             .get(currentSong.url, {
+    //                 headers: {
+    //                     Authorization: "Bearer " + accessToken,
+    //                 },
+    //             }).then((response) => {
+
+    //             })
+    //         const audio = new Audio(currentSong.url);
+    //         if (state.pause) {
+    //             playerRef.current.pause();
+    //         } else {
+    //             playerRef.current.play();
+    //         }
+
+    //         setState(prevState => ({ ...prevState, pause: !pause }));
+    //     }else{
+    //         const audio = new Audio(currentSong.audio);
+
+    // if (state.pause) {
+    //   playerRef.current.pause();
+    // } else {
+    //   playerRef.current.play();
+    // }
+
+    // setState((prev) => ({ ...prev, pause: !pause }));
+    //     }
     };
 
+
     const clickAudio = (key) => {
+        console.log("key: ", key)
         const { pause } = state;
 
         setState((prev) => ({ ...prev, index: key }));
@@ -302,9 +332,10 @@ function MediaPlayer(props) {
         };
     }, [state]);
 
-    const { musicList, index, currentTime, pause } = state;
-    const currentSong = musicList[index];
-    console.log("musicList:", musicList);
+
+
+    const currentSong = playlists?.length > 0 ? playlists[index] : musicList[index];
+    //console.log("playList:", playlists);
 
     return (
         <body className="mp">
@@ -360,7 +391,7 @@ function MediaPlayer(props) {
                                     <span className="track-name">{track.name}</span>
                                     <span className="track-author">{track.author}</span>
                                 </div>
-                                <span className="track-duration">{formatTime(track.duration / 1000)}</span>
+                                <span className="track-duration">{track.duration}</span>
                             </div>
                         ))
                     ) : (
