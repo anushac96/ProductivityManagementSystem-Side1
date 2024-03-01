@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mysql = require("mysql");
 const cors = require("cors");
+const bcrypt = require('bcrypt');
 
 app.use(cors());
 app.use(express.json());
@@ -22,23 +23,32 @@ const db = mysql.createPool({
 //     })
 // });
 
-app.post("/signup", (req, res) => {
+app.post("/signup", async(req, res) => {
     const username = req.body.username;
     const userpwd  = req.body.userpwd;
     const useremailid = req.body.useremailid;
     console.log(username);
     console.log(userpwd);
     console.log(useremailid);
-    const sqlInsert = "INSERT INTO users (username, userpwd, useremailid) VALUES (?, ?, ?)";
-    db.query(sqlInsert, [username, userpwd, useremailid], (err, result) => {
-        if (err) {
-            console.error("Error inserting data:", err);
-            res.status(500).json({ success: false, message: "Failed to register user" });
-        } else {
-            console.log("User registered successfully");
-            res.status(200).json({ success: true, message: "User registered successfully" });
-        }
-    });
+    try {
+        // Hash the password using bcrypt
+        const hashedPassword = await bcrypt.hash(userpwd, 10); // 10 is the number of salt rounds
+
+        // Insert the hashed password into the database
+        const sqlInsert = "INSERT INTO users (username, userpwd, useremailid) VALUES (?, ?, ?)";
+        db.query(sqlInsert, [username, hashedPassword, useremailid], (err, result) => {
+            if (err) {
+                console.error("Error inserting data:", err);
+                res.status(500).json({ success: false, message: "Failed to register user" });
+            } else {
+                console.log("User registered successfully");
+                res.status(200).json({ success: true, message: "User registered successfully" });
+            }
+        });
+    } catch (error) {
+        console.error("Error hashing password:", error);
+        res.status(500).json({ success: false, message: "Failed to register user" });
+    }
 });
 
 app.listen(3001,()=>{

@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom'; // Import ReactDOM
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import SignIn from './SignIn'; // Import SignIn
 import SignUp from './SignUp';
