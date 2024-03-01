@@ -5,7 +5,6 @@ import { useState } from 'react';
 import SettingsContext from './SettingsContext';
 import Calender from './Calender';
 import MediaPlayer from './MediaPlayer';
-import Register from './SignUp';
 import Login from './login';
 import axios from 'axios';
 
