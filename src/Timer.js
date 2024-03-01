@@ -31,7 +31,6 @@ function Timer() {
     const [lastUpdatedDate, setLastUpdatedDate] = useState(getStoredLastUpdatedDate() || new Date().toLocaleDateString());
 
     const [tags, setTags] = useState(getStoredTags());
-    //const [selectedTag, setSelectedTag] = useState('');
     const [totalTimeWorked, setTotalTimeWorked] = useState({});
     const [newTag, setNewTag] = useState('');
 

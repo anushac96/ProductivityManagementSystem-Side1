@@ -1,0 +1,123 @@
+.AppRegister{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; 
+    padding: 1rem 0.5rem;
+  }
+  
+  section {
+    width: 100%;
+    max-width: 420px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 1rem;
+    background-color: rgba(0,0,0,0.4);
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    flex-grow: 1;
+    padding-bottom: 1rem;
+  }
+  
+  a, a:visited {
+    color: #fff;
+  }
+  
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  button,
+  textarea {
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+  }
+  
+  form .toRegister {
+    padding: 0.5rem;
+    width: fit-content;
+    background-color: rgba(39, 70, 132, 0.7);
+  }
+  
+  .instructions {
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    background: #000;
+    color: #fff;
+    padding: 0.25rem;
+    position: relative;
+    bottom: -10px;
+  }
+  
+  .instructions > svg {
+    margin-right: 0.25rem;
+  }
+  
+  .offscreen {
+    position: absolute;
+    left: -9999px;
+  }
+  
+  .hide {
+    display: none;
+  }
+  
+  .valid {
+    color: limegreen;
+    margin-left: 0.25rem;
+  }
+  
+  .invalid {
+    color: red;
+    margin-left: 0.25rem;
+  }
+  
+  .errmsg {
+    background-color: lightpink;
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .line {
+    display: inline-block;
+  }
+  
+  .loginB {
+    margin-top: 10px;
+    background-color: rgba(39, 70, 131, 0.7); /* Blue background color */
+    color: #fff; /* White text color */
+    padding: 10px 20px; /* Padding inside the button */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Cursor style */
+    font-size: 16px; /* Font size */
+    width: fit-content;
+  }
+  
+  .loginB:hover {
+    background-color: #0056b3; /* Darker blue when mouse over */
+  }
+  
+  .loginB:disabled {
+    background-color: #ccc; /* Grayed out background color when disabled */
+    cursor: not-allowed; /* Disable cursor */
+  }
+
+  .signup-link:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+.signin-link:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+  
