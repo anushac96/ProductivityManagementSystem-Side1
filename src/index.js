@@ -4,6 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import SignIn from './SignIn'; // Import SignIn
 import SignUp from './SignUp';
+import App from './App'; // Import the App component
 import { BrowserRouter as Router, Route, Navigate, Routes } from 'react-router-dom';
 
 // Use ReactDOM.render instead of ReactDOM.createRoot
@@ -13,6 +14,7 @@ ReactDOM.render(
       <Routes>
         <Route path="/signin" element={<SignIn />} /> {/* Use 'element' prop instead of 'component' */}
         <Route path="/signup" element={<SignUp />} /> {/* Use 'element' prop instead of 'component' */}
+        <Route path="/app" element={<App />} /> {/* Define route for /app */}
         <Route path="/" element={<Navigate to="/signin" />} />
       </Routes>
     </Router>

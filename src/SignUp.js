@@ -88,7 +88,10 @@ const SignUp = () => {
                 <section>
                     <h1>Success!</h1>
                     <p>
-                        <a href="#">Sign In</a>
+                        <span className="line">
+                            {/*put router link here*/}
+                            <Link to="/signin" className="signin-link">Sign in</Link>
+                        </span>
                     </p>
                 </section>
             ) : (
