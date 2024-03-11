@@ -171,15 +171,15 @@ function Timer() {
     // Update the total time worked for the selected tag during work sessions
     useEffect(() => {
         let updatedValue = 0;
-    
+
         // Fetch previous value from localStorage and convert it from minutes to seconds
         //const storedTotalTimeWorked = JSON.parse(localStorage.getItem('totalTimeWorked')) || {};
         //const storedValueInSeconds = (storedTotalTimeWorked[selectedTag] || 0) * 60;
         //console.log("storedTotalTimeWorked: ", storedTotalTimeWorked,"     storedValueInSeconds:", storedValueInSeconds);
-        
+
         // Start counting from the stored value in seconds
         //updatedValue = storedValueInSeconds;
-        
+
         const timerId = setInterval(() => {
             if (!isPaused && mode === 'work' && selectedTag) {
                 //console.log("selected tag is: ", selectedTag);
@@ -187,7 +187,7 @@ function Timer() {
                 setTotalTimeWorked(prev => {
                     console.log('current value of', selectedTag, ':', prev[selectedTag]); // Log the previous value
                     updatedValue = (prev[selectedTag] || 0) + 1;
-                    console.log("updatedValue: ",updatedValue);
+                    console.log("updatedValue: ", updatedValue);
                     return { ...prev, [selectedTag]: updatedValue };
                 });
             }
@@ -196,16 +196,16 @@ function Timer() {
                 // Store totalTimeWorked in local storage when a work cycle is completed
                 if (selectedTag) {
                     //console.log("storing");
-                    localStorage.setItem('totalTimeWorked', JSON.stringify({ ...totalTimeWorked, [selectedTag]: (updatedValue+1) }));
+                    localStorage.setItem('totalTimeWorked', JSON.stringify({ ...totalTimeWorked, [selectedTag]: (updatedValue + 1) }));
                 }
             }
-            
+
         }, 1000);
 
         // Execute the storage function on component unmount or dependency change
         return () => clearInterval(timerId);
-    }, [isPaused, mode, selectedTag, settingsInfo.workMinutes]);    
-    
+    }, [isPaused, mode, selectedTag, settingsInfo.workMinutes]);
+
 
     // Handle tag selection
     const handleTagChange = (event) => {
@@ -244,19 +244,21 @@ function Timer() {
     return (
         <div>
             <div>
-                <select value={selectedTag} onChange={handleTagChange}>
-                    <option value="">Select Tag</option>
-                    {tags.map(tag => (
-                        <option key={tag} value={tag}>{tag}</option>
-                    ))}
-                </select>
+                {/* <div class="select-wrapper">
+                    <select class="custom-select" value={selectedTag} onChange={handleTagChange}>
+                        <option value="">Select Tag</option>
+                        {tags.map(tag => (
+                            <option key={tag} value={tag}>{tag}</option>
+                        ))}
+                    </select>
+                </div>
                 <input
                     type="text"
                     placeholder="Add new tag"
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
                 />
-                <button onClick={handleAddTag}>Add</button>
+                <button onClick={handleAddTag}>Add</button> */}
             </div>
             <CircularProgressbar
                 value={percentage}
@@ -276,12 +278,12 @@ function Timer() {
                     <SettingButton onClick={() => settingsInfo.setShowSettings(true)} />
                 </div>
             </div>
-            {selectedTag && totalTimeWorked[selectedTag] && (
-                <p>Minutes Worked for {selectedTag}: {totalTimeWorked[selectedTag]/60}</p>
+            {/* {selectedTag && totalTimeWorked[selectedTag] && (
+                <p>Minutes Worked for {selectedTag}: {totalTimeWorked[selectedTag] / 60}</p>
             )}
             <div style={{ marginTop: '20px' }}>
                 <p>Minutes Worked Today: {totalHoursWorked}</p>
-            </div>
+            </div> */}
         </div>
     );
 }
