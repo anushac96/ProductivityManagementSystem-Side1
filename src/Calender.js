@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { format, parse, isValid, addHours } from 'date-fns';
+import axios from "axios";
 
 function Calender() {
 // TODO: when clicked on dates of next/prev month. That date should get selected and show in right
@@ -10,6 +11,10 @@ function Calender() {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]);
+
+  const [errMsg, setErrMsg] = useState('');
+
+  //const history = useNavigate();
 
   const [selectedEventIndex, setSelectedEventIndex] = useState(null);
   const eventsContainerRef = React.useRef();
@@ -54,11 +59,11 @@ function Calender() {
     window.sessionStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
   }); // Update the effect to run whenever the date changes
 
-  // // useEffect to schedule notifications on component mount
-  // useEffect(() => {
-  //   // Start scheduling minute notifications
-  //   scheduleMinuteNotifications(eventsArr);
-  // }, [eventsArr]);
+  // useEffect to schedule notifications on component mount
+  useEffect(() => {
+    // Start scheduling minute notifications
+    scheduleMinuteNotifications(eventsArr);
+  }, [eventsArr]);
 
   useEffect(() => {
     const scheduleNotifications = () => {
@@ -150,53 +155,53 @@ function Calender() {
     initCalendar();
   }, [date, inputDate, eventsArr, events]); // Update the effect to run whenever the date changes
 
-  // function scheduleMinuteNotifications(eventsArr) {
-  //   setInterval(() => {
-  //     // Request permission for notifications
-  //     Notification.requestPermission().then((permission) => {
-  //       if (permission === 'granted') {
-  //         // Check for events within the next minute
-  //         const currentTime = new Date();
-  //         const nextMinute = new Date(currentTime.getTime() + 60 * 1000);
+  function scheduleMinuteNotifications(eventsArr) {
+    setInterval(() => {
+      // Request permission for notifications
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          // Check for events within the next minute
+          const currentTime = new Date();
+          const nextMinute = new Date(currentTime.getTime() + 60 * 1000);
   
-  //         const upcomingEvents = eventsArr.filter((event) => {
-  //           return event.events.some((e) => {
-  //             const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
-  //             return eventTime > currentTime && eventTime <= nextMinute;
-  //           });
-  //         });
+          const upcomingEvents = eventsArr.filter((event) => {
+            return event.events.some((e) => {
+              const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
+              return eventTime > currentTime && eventTime <= nextMinute;
+            });
+          });
   
-  //         console.log("Schedule notifications for upcoming events");
+          console.log("Schedule notifications for upcoming events");
   
-  //         // Schedule notifications for upcoming events
-  //         upcomingEvents.forEach((event) => {
-  //           event.events.forEach((e) => {
-  //             const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
-  //             const timeDiff = eventTime - currentTime;
-  //             console.log("Scheduled");
-  //             // Request permission for notifications
-  //             if (Notification.permission === 'granted') {
-  //               console.log("permission granted");
-  //               // Create a notification
-  //               const notification = new Notification('Event Reminder', {
-  //                 body: `Event "${e.title}" is scheduled within the next minute.`,
-  //               });
+          // Schedule notifications for upcoming events
+          upcomingEvents.forEach((event) => {
+            event.events.forEach((e) => {
+              const eventTime = parse(e.time.split('-')[0].trim(), 'HH:mm', new Date());
+              const timeDiff = eventTime - currentTime;
+              console.log("Scheduled");
+              // Request permission for notifications
+              if (Notification.permission === 'granted') {
+                console.log("permission granted");
+                // Create a notification
+                const notification = new Notification('Event Reminder', {
+                  body: `Event "${e.title}" is scheduled within the next minute.`,
+                });
   
-  //               // Automatically close the notification after 10 seconds
-  //               setTimeout(() => {
-  //                 notification.close();
-  //               }, 10000);
-  //             } else {
-  //               console.log("Notification permission not granted");
-  //             }
-  //           });
-  //         });
-  //       } else {
-  //         console.log("Notification permission not granted");
-  //       }
-  //     });
-  //   }, 60 * 1000); // Run every minute
-  // }  
+                // Automatically close the notification after 10 seconds
+                setTimeout(() => {
+                  notification.close();
+                }, 10000);
+              } else {
+                console.log("Notification permission not granted");
+              }
+            });
+          });
+        } else {
+          console.log("Notification permission not granted");
+        }
+      });
+    }, 60 * 1000); // Run every minute
+  }  
 
   function initCalendar() {
 
@@ -455,17 +460,6 @@ function Calender() {
     console.log("events are:", eventsArr);
   }
 
-  // const handleAddEvent = () => {
-  //   // Do something with the event details (eventName, eventTimeFrom, eventTimeTo)
-  //   // For now, let's just log them
-  //   console.log('Event Name:', eventName);
-  //   console.log('Event Time From:', eventTimeFrom);
-  //   console.log('Event Time To:', eventTimeTo);
-
-  //   // Close the add-event-wrapper
-  //   setAddEventActive(false);
-  // };
-
   function updateEvents(selectedDate) {
 
     //console.log("events array in updated method: ", eventsArr);
@@ -558,6 +552,7 @@ function Calender() {
       // Update the state and call the function to update events based on the selected date
       setEventsArr(prevEventsArr => [...prevEventsArr, newEntry]);
     }
+    addEvent(localStorage.getItem("userId"),eventName, eventTimeFrom, eventTimeTo);
     // Close the add-event-wrapper
     toggleAddEvent();
   };
@@ -569,10 +564,33 @@ function Calender() {
     // Additional actions or side effects can be performed here
     updateEvents(selectedDayIndex); // Call updateEvents after updating state
 
+    //addEvent(localStorage.getItem("userId"),eventName, eventDate, eventTime);
     // Update localStorage
     window.sessionStorage.setItem('eventsStored', JSON.stringify(eventsArr));
     window.sessionStorage.setItem("eventsOfPerticularDateStored", JSON.stringify(events));
   }, [eventsArr]);
+
+  // Modify the frontend code to send requests to the new endpoints for managing events
+// Include user authentication tokens in requests to authenticate users and associate events with their accounts
+// Example using fetch API:
+
+const addEvent = async ( userId, eventName, eventTimeFrom, eventTimeTo) => {
+  //e.preventDefault();
+  try {
+    const startTime = format(parse(eventTimeFrom, 'h:mm a', new Date(selectedDayIndex.getFullYear(), selectedDayIndex.getMonth(), selectedDayIndex.getDate())), 'yyyy-MM-dd HH:mm:ss');
+const endTime = format(parse(eventTimeTo, 'h:mm a', new Date(selectedDayIndex.getFullYear(), selectedDayIndex.getMonth(), selectedDayIndex.getDate())), 'yyyy-MM-dd HH:mm:ss');
+
+    console.log("startTime ",startTime);
+    console.log("endTime: ",endTime);
+      const response = await axios.post('http://localhost:3001/addEvents', { userId, eventName, startTime, endTime })
+      console.log(response);
+  } catch (error) {
+      console.error("Error:", error.response.data.message);
+      setErrMsg(error.response.data.message);
+  }
+}
+
+// Update other CRUD operations for events in a similar manner
 
   const handleEventClick = (index) => {
     // Remove the clicked event from the events array
