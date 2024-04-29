@@ -63,4 +63,4 @@ chrome.storage.local.get("BlockedUrls", (data) => {
           CloseTab()
       }
   }
-})
+})  

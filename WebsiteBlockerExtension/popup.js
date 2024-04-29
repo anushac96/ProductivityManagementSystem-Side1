@@ -21,16 +21,99 @@ function ShowError(text) {
         document.getElementById("ERRORcontainer").remove()
     }, 3000)
 }
+// blocks only 1 website
+// document.getElementById("btn").addEventListener("click", () => {
 
+//     if (WebsiteUrl.toLowerCase().includes("chrome://")) {
+//         ShowError("You cannot block a chrome URL")
+//     }
+//     else {
+//         chrome.storage.local.get("BlockedUrls", (data) => {
+//             if (data.BlockedUrls === undefined) {
+//                 chrome.storage.local.set({ BlockedUrls: [{ status: "In_Progress", url: WebsiteHostName }] })
+//                 chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+//                     chrome.tabs.sendMessage(
+//                         tabs[0].id,
+//                         { from: "popup", subject: "startTimer" }
+//                     );
+//                 });
+
+//                 setTimeout(() => {
+//                     var then = new Date();
+//                     then.setHours(24, 0, 0, 0);
+//                     const blockTill = then.getTime()
+
+//                     chrome.storage.local.set({
+//                         BlockedUrls: [{
+//                             status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill
+//                         }]
+//                     })
+//                 }, 5000);
+
+//             }
+//             else {
+//                 if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "In_Progress")) {
+//                     ShowError("This URL will be completely blocked after some time")
+//                 }
+//                 else if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "BLOCKED")) {
+//                     ShowError("This URL is Blocked completely")
+//                 }
+//                 else {
+//                     chrome.storage.local.set({ BlockedUrls: [...data.BlockedUrls, { status: "In_Progress", url: WebsiteHostName }] })
+
+//                     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+//                         chrome.tabs.sendMessage(
+//                             tabs[0].id,
+//                             { from: "popup", subject: "startTimer" }
+//                         );
+//                     });
+
+//                     setTimeout(() => {
+//                         chrome.storge.local.get("BlockedUrls", (data) => {
+//                             data.BlockedUrls.forEach((e, index) => {
+//                                 if (e.url === WebsiteHostName && e.status === 'In_Progress') {
+//                                     var arr = data.BlockedUrls.splice(index, 1);
+
+//                                     var then = new Date();
+//                                     then.setHours(24, 0, 0, 0);
+//                                     const blockTill = then.getTime()
+
+//                                     chrome.storage.local.set({ BlockedUrls: [...arr, { status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill }] })
+//                                 }
+//                             })
+//                         })
+
+
+//                     }, 5000);
+
+//                 }
+//             }
+//         })
+
+//     }
+// })
+
+//Todo
 document.getElementById("btn").addEventListener("click", () => {
-
     if (WebsiteUrl.toLowerCase().includes("chrome://")) {
-        ShowError("You cannot block a chrome URL")
-    }
-    else {
+        ShowError("You cannot block a chrome URL");
+    } else {
         chrome.storage.local.get("BlockedUrls", (data) => {
-            if (data.BlockedUrls === undefined) {
-                chrome.storage.local.set({ BlockedUrls: [{ status: "In_Progress", url: WebsiteHostName }] })
+            let blockedUrls = data.BlockedUrls || [];
+
+            const urlIndex = blockedUrls.findIndex(e => e.url === WebsiteHostName);
+
+            if (urlIndex !== -1) {
+                if (blockedUrls[urlIndex].status === "In_Progress") {
+                    ShowError("This URL will be completely blocked after some time");
+                } else {
+                    ShowError("This URL is Blocked completely");
+                }
+            } else {
+                blockedUrls.push({ status: "In_Progress", url: WebsiteHostName });
+
+                chrome.storage.local.set({ BlockedUrls: blockedUrls });
+
                 chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
                     chrome.tabs.sendMessage(
                         tabs[0].id,
@@ -39,58 +122,99 @@ document.getElementById("btn").addEventListener("click", () => {
                 });
 
                 setTimeout(() => {
-                    var then = new Date();
-                    then.setHours(24, 0, 0, 0);
-                    const blockTill = then.getTime()
+                    chrome.storage.local.get("BlockedUrls", (data) => {
+                        let updatedUrls = data.BlockedUrls || [];
 
-                    chrome.storage.local.set({
-                        BlockedUrls: [{
-                            status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill
-                        }]
-                    })
-                }, 5000);
+                        updatedUrls = updatedUrls.map(e => {
+                            if (e.url === WebsiteHostName && e.status === 'In_Progress') {
+                                const then = new Date();
+                                then.setHours(24, 0, 0, 0);
+                                const blockTill = then.getTime();
+                                return { ...e, status: "BLOCKED", BlockTill: blockTill };
+                            } else {
+                                return e;
+                            }
+                        });
 
-            }
-            else {
-                if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "In_Progress")) {
-                    ShowError("This URL will be completely blocked after some time")
-                }
-                else if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "BLOCKED")) {
-                    ShowError("This URL is Blocked completely")
-                }
-                else {
-                    chrome.storage.local.set({ BlockedUrls: [...data.BlockedUrls, { status: "In_Progress", url: WebsiteHostName }] })
-
-                    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
-                        chrome.tabs.sendMessage(
-                            tabs[0].id,
-                            { from: "popup", subject: "startTimer" }
-                        );
+                        chrome.storage.local.set({ BlockedUrls: updatedUrls });
                     });
-
-                    setTimeout(() => {
-                        chrome.storge.local.get("BlockedUrls", (data) => {
-                            data.BlockedUrls.forEach((e, index) => {
-                                if (e.url === WebsiteHostName && e.status === 'In_Progress') {
-                                    var arr = data.BlockedUrls.splice(index, 1);
-
-                                    var then = new Date();
-                                    then.setHours(24, 0, 0, 0);
-                                    const blockTill = then.getTime()
-
-                                    chrome.storage.local.set({ BlockedUrls: [...arr, { status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill }] })
-                                }
-                            })
-                        })
-
-
-                    }, 5000);
-
-                }
+                }, 5000);
             }
-        })
-
+        });
     }
+});
 
 
-})
+// issue
+// document.getElementById("btn").addEventListener("click", () => {
+
+//     if (WebsiteUrl.toLowerCase().includes("chrome://")) {
+//         ShowError("You cannot block a chrome URL")
+//     }
+//     else {
+//         chrome.storage.local.get("BlockedUrls", (data) => {
+//             if (data.BlockedUrls === undefined) {
+//                 chrome.storage.local.set({ BlockedUrls: [{ status: "In_Progress", url: WebsiteHostName }] })
+//                 chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+//                     chrome.tabs.sendMessage(
+//                         tabs[0].id,
+//                         { from: "popup", subject: "startTimer" }
+//                     );
+//                 });
+
+//                 setTimeout(() => {
+//                     var then = new Date();
+//                     then.setHours(24, 0, 0, 0);
+//                     const blockTill = then.getTime()
+
+//                     chrome.storage.local.set({
+//                         BlockedUrls: [{
+//                             status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill
+//                         }]
+//                     })
+//                 }, 5000);
+
+//             }
+//             else {
+//                 if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "In_Progress")) {
+//                     ShowError("This URL will be completely blocked after some time")
+//                 }
+//                 else if (data.BlockedUrls.some((e) => e.url === WebsiteHostName && e.status === "BLOCKED")) {
+//                     ShowError("This URL is Blocked completely")
+//                 }
+//                 else {
+//                     chrome.storage.local.set({ BlockedUrls: [...data.BlockedUrls, { status: "In_Progress", url: WebsiteHostName }] })
+
+//                     chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+//                         chrome.tabs.sendMessage(
+//                             tabs[0].id,
+//                             { from: "popup", subject: "startTimer" }
+//                         );
+//                     });
+
+//                     setTimeout(() => {
+//                         chrome.storge.local.get("BlockedUrls", (data) => {
+//                             data.BlockedUrls.forEach((e, index) => {
+//                                 if (e.url === WebsiteHostName && e.status === 'In_Progress') {
+//                                     var arr = data.BlockedUrls.splice(index, 1);
+
+//                                     var then = new Date();
+//                                     then.setHours(24, 0, 0, 0);
+//                                     const blockTill = then.getTime()
+
+//                                     chrome.storage.local.set({ BlockedUrls: [...arr, { status: "BLOCKED", url: WebsiteHostName, BlockTill: blockTill }] })
+//                                 }
+//                             })
+//                         })
+
+
+//                     }, 5000);
+
+//                 }
+//             }
+//         })
+
+//     }
+
+
+// })
