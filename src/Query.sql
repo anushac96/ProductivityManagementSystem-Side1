@@ -13,3 +13,11 @@ CREATE TABLE KaryaDB.events (
     endTime DATETIME NOT NULL,
     FOREIGN KEY (userId) REFERENCES users(userId)
 );
+
+CREATE TABLE KaryaDB.usersCurrentTask (
+    userId INT,
+    date DATE,
+    eventName VARCHAR(255) NOT NULL,
+    action INT DEFAULT 1, -- Default value is 1 for added events
+    FOREIGN KEY (userId) REFERENCES KaryaDB.users(userId)
+);
