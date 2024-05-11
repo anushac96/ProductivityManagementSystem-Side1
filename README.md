@@ -1,13 +1,52 @@
-# Pomodaro Timer
+# KARYA: A Productivity Management Web App
+
+## Overview
+
+In today's fast-paced digital world, maintaining focus and managing time effectively amidst a myriad of distractions has become increasingly challenging. KARYA is a comprehensive productivity management system designed to empower users to reclaim control over their attention, tasks, and overall productivity.
+
+## Problem Statement
+
+In the contemporary digital landscape, individuals struggle with an overwhelming influx of information and stimuli, leading to enduring distractions, shortened attention spans, and cognitive overload. Despite the conveniences offered by technology, smartphones paradoxically emerge as significant sources of distraction, disrupting concentration and hindering cognitive function with every notification. The prevalent practice of multitasking has been discredited, as studies reveal its detrimental effects on productivity and learning.
+
+## Solution
+
+KARYA aims to address these challenges by providing a centralized hub for managing attention, tasks, and time. By offering a user-friendly interface and a suite of productivity tools, including a Pomodoro timer, calendar, to-do list, website blocker, and more, the application seeks to create a distraction-free environment conducive to deep work and enhanced productivity. Through seamless integration with essential utilities like a music player and calendar, KARYA offers a holistic solution to combat the pervasive challenges of the digital age.
+
+## Features
+
+- **Pomodoro Timer:** Customizable work and break intervals with visual and audible notifications.
+- **Task and Event Management:** Create, edit, prioritize, and track tasks and events efficiently.
+- **Distraction Blocking:** Chrome extension to block distracting websites, promoting focus during work sessions.
+- **Notification System:** Push notifications for upcoming tasks and events, configurable based on user preferences.
+- **Music Player Integration:** Seamless integration with the Spotify API for personalized music playlists.
+- **User Authentication:** Secure registration, login, and third-party authentication options for user convenience.
+
+## Installation
+
+To install KARYA, follow these steps:
+
+1. Clone the repository: `git clone https://github.com/anushac96/ProductivityManagementSystem-Side1.git`
+2. Install dependencies: `npm install`
+3. To run the application, open 2 terminals
+4. In Terminal 1, run the server: `node src/Server.js`
+5. Start the development server: `npm start`
+
+## Usage
+
+1. Register or log in to your account.
+2. Explore the various features offered by the application, such as the Pomodoro timer, task management, and distraction blocking.
+3. Customize settings and preferences to suit your productivity needs.
+4. Enjoy a focused and productive work environment with KARYA.
+
 ## For circular progress bar
 1. go to https://www.npmjs.com/
 2. type react-circular-progressbar
 3. installation
-npm install --save react-circular-progressbar
+  npm install --save react-circular-progressbar
 4. usage
-import { CircularProgressbar } from 'react-circular-progressbar';
-import 'react-circular-progressbar/dist/styles.css';
-<CircularProgressbar value={60} text={'60%'} />;
+  import { CircularProgressbar } from 'react-circular-progressbar';
+  import 'react-circular-progressbar/dist/styles.css';
+  <CircularProgressbar value={60} text={'60%'} />;
 
 ## For play button
 https://heroicons.com/
@@ -27,58 +66,3 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
